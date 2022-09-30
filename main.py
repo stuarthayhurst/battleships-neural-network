@@ -3,19 +3,29 @@ import structures
 
 exampleGraph = structures.Graph()
 
-nodeOne = exampleGraph.addNode()
-nodeTwo = exampleGraph.addNode()
-nodeThree = exampleGraph.addNode()
-nodeFour = exampleGraph.addNode()
+#Create the layers and nodes
+layerCount = 10
+nodeCount = 5
+for i in range(0, layerCount):
+  layerId = exampleGraph.addLayer()
+  layerObj = exampleGraph.getLayer(layerId)
+  for i in range(0, nodeCount):
+    layerObj.addNode()
 
-exampleGraph.addEdge(nodeOne, nodeTwo, 12)
-exampleGraph.addEdge(nodeOne, nodeThree, 6)
-exampleGraph.addEdge(nodeTwo, nodeFour, 2)
+#Create the connections
+for layerId in range(0, layerCount):
+  layer = exampleGraph.getLayer(layerId)
+  for nodeId in layer.getNodeList():
+    node = layer.getNode(nodeId)
+    for i in range(0, nodeCount):
+      node.addConnection(i, 16)
 
-print(f"Nodes: {exampleGraph.getNodeList()}")
-print(exampleGraph.getNode(nodeOne).getConnection(nodeThree))
+print(f"Layers: {exampleGraph.getLayerList()}")
+for layer in exampleGraph:
+  print(f"Layer: {layer}")
+  for node in layer:
+    print(f" - Node: {node}")
+    for connectionId in node.getConnections():
+      print(f"   - Node -> {connectionId}: {node.getConnection(connectionId)}")
 
-for node in exampleGraph:
-  print(f"{node}")
-
-print(exampleGraph)
+print(f"\n{exampleGraph}")
