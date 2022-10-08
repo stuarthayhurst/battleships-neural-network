@@ -4,8 +4,8 @@ import structures
 exampleGraph = structures.Graph()
 
 #Create the layers and nodes
-layerCount = 10
-nodeCount = 5
+layerCount = 3
+nodeCount = 2
 for i in range(0, layerCount):
   layerId = exampleGraph.addLayer()
   layerObj = exampleGraph.getLayer(layerId)
@@ -26,6 +26,6 @@ for layer in exampleGraph:
   for node in layer:
     print(f" - Node: {node}")
     for connectionId in node.getConnections():
-      print(f"   - Node -> {connectionId}: {node.getConnection(connectionId)}")
+      print(f"   - Current Node -> {connectionId}: {node.getConnection(connectionId)}")
 
 print(f"\n{exampleGraph}")
