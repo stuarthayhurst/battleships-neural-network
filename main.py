@@ -20,6 +20,14 @@ for layerId in range(0, layerCount):
     for i in range(0, nodeCount):
       node.addConnection(i, 16)
 
+weights = [12, 54, 1, 0, 19, 43, 22, 16, 99, -1, 7, 4]
+
+for l in range(0, layerCount):
+  for n in range(0, nodeCount):
+    for t in range(0, nodeCount):
+      weightIndex = (l * (nodeCount ** 2)) + (n * nodeCount) + t
+      exampleGraph.getLayer(l).getNode(n).addConnection(t, weights[weightIndex])
+
 print(f"Layers: {exampleGraph.getLayerList()}")
 for layer in exampleGraph:
   print(f"Layer: {layer}")
