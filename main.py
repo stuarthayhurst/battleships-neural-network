@@ -1,39 +1,37 @@
 #!/usr/bin/python3
+import random
 import structures
 
-exampleGraph = structures.Graph()
+hiddenLayerCount = 3
+nodeCount = 10
+inputDimensions = 2
 
-#Create the layers and nodes
-layerCount = 3
-nodeCount = 2
-for i in range(0, layerCount):
-  layerId = exampleGraph.addLayer()
-  layerObj = exampleGraph.getLayer(layerId)
-  for i in range(0, nodeCount):
-    layerObj.addNode()
+exampleNetwork = structures.Network(hiddenLayerCount, nodeCount, 1, inputDimensions ** 2)
 
-#Create the connections
-for layerId in range(0, layerCount):
-  layer = exampleGraph.getLayer(layerId)
-  for nodeId in layer.getNodeList():
-    node = layer.getNode(nodeId)
-    for i in range(0, nodeCount):
-      node.addConnection(i, 16)
+networkSize = (((inputDimensions ** 2) * nodeCount) * 2) + (nodeCount ** 2) * (hiddenLayerCount - 1)
+exampleNetwork.dumpNetwork()
+print(networkSize)
 
-weights = [12, 54, 1, 0, 19, 43, 22, 16, 99, -1, 7, 4]
+weights = [random.randint(0, 10) for i in range(0, networkSize)]
+exampleNetwork.loadWeights(weights)
 
-for l in range(0, layerCount):
-  for n in range(0, nodeCount):
-    for t in range(0, nodeCount):
-      weightIndex = (l * (nodeCount ** 2)) + (n * nodeCount) + t
-      exampleGraph.getLayer(l).getNode(n).addConnection(t, weights[weightIndex])
+exampleNetwork.dumpNetwork()
 
-print(f"Layers: {exampleGraph.getLayerList()}")
-for layer in exampleGraph:
-  print(f"Layer: {layer}")
-  for node in layer:
-    print(f" - Node: {node}")
-    for connectionId in node.getConnections():
-      print(f"   - Current Node -> {connectionId}: {node.getConnection(connectionId)}")
+"""
+Todo:
+ - Dataset generation / saving (file storage)
+   - Generate n boards, and use for e epochs
+ - Network pass implementation / sampling
+ - Network training / improvement
+   - Save activiation threshold / function
+   - Optimise weight modification time
+   - Add training / loss metrics
+ - Network weight saving (file storage)
+"""
 
-print(f"\n{exampleGraph}")
+"""
+Notes:
+ - Create nodes at same time as weights (Mention as a load time optimisation)
+ - Add method to query network size (use to verify whether weights can be loaded)
+ - Keep structures and network separate (do differently for implementation)
+"""
