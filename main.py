@@ -70,9 +70,3 @@ Todo:
    - Potentially add more activation layers
    - Add training / loss metrics
 """
-
-"""
-Notes:
- - Create nodes at same time as weights (Mention as a load time optimisation)
-  - If the weights won't work, use a blank set (verification of size)
-"""
