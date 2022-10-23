@@ -59,25 +59,22 @@ class Network():
         weightIndex += 1
 
   def dumpNetwork(self):
-    print(f"Input layer: {self.inputLayer}")
+    weights = []
+
     for node in self.inputLayer:
-      print(f" - Node: {node}")
       for connectionId in node.getConnections():
-        print(f"   - Current Node -> {connectionId}: {node.getConnection(connectionId)}")
+        weights.append(node.getConnection(connectionId))
 
-    print(f"Layers: {self.graph.getLayerList()}")
     for layer in self.graph:
-      print(f"Layer: {layer}")
       for node in layer:
-        print(f" - Node: {node}")
         for connectionId in node.getConnections():
-          print(f"   - Current Node -> {connectionId}: {node.getConnection(connectionId)}")
+          weights.append(node.getConnection(connectionId))
 
-    print(f"Output layer: {self.outputLayer}")
     for node in self.outputLayer:
-      print(f" - Node: {node}")
       for connectionId in node.getConnections():
-        print(f"   - Current Node -> {connectionId}: {node.getConnection(connectionId)}")
+        weights.append(node.getConnection(connectionId))
+
+    return weights
 
   def runData(self, inputData):
     if len(inputData) != self.interfaceSize:
