@@ -29,16 +29,21 @@ generatedData = dataset.buildDataset(datasetSize, boardDimensions, maxHits)
 
 print(f"Generated dataset in {round(getSeconds() - startTime, 4)}s")
 
+print(generatedData[0][0])
+print(generatedData[0][1])
 
-"""
-for gridCount in range(datasetSize):
-  for row in generatedData[gridCount][1]:
-    print(row)
-  print()
-  for row in generatedData[gridCount][0]:
-    print(row)
-  print("\n------------------\n")
-"""
+#Maybe represent inputs as a vector
+#Include x coord, y coord, has been guessed, has been hit
+#3 dimensional vector (x, y, state)
+#Whole datapiece as a vector?
+#Output is correct is it's a vector with a 1 over an unhit ship
+
+#Match number of nodes and input size
+#Use regular division / multiplication with weights
+#Activation function on final layer
+#Average / handle cumulative data passing through
+#Tweak how weights are modified (error calculated)
+#Tweak state representation
 
 """
 Todo:

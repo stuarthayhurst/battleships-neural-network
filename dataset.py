@@ -41,11 +41,11 @@ def placeShips(grid, boardDimensions, pieceInfo):
         x, y = random.randint(0, boardDimensions - 1), random.randint(0, boardDimensions - 1)
 
         #Attempt to place the piece
-        if placePiece(grid, pieceInfo[piece][0], x, y, flipped):
+        if placePiece(grid, pieceInfo[piece], x, y, flipped):
           placing = False
 
 def buildDataset(datasetSize, boardDimensions, maxHits):
-  pieceInfo = {"c": [5], "b": [4], "d": [3], "s": [3], "p": [2]}
+  pieceInfo = {"c": 5, "b": 4, "d": 3, "s": 3, "p": 2}
   dataset = []
 
   #Build the fresh boards
@@ -72,5 +72,12 @@ def buildDataset(datasetSize, boardDimensions, maxHits):
 
           #Trigger next shot
           makingShot = False
+
+    #Concatenate data
+    for item in [0, 1]:
+      tempData = []
+      for i in range(boardDimensions):
+        tempData += dataset[gridCount][item][i]
+      dataset[gridCount][item] = tempData
 
   return dataset
