@@ -13,7 +13,7 @@ nodeCount = 10
 inputDimensions = 7
 
 networkSize = (((inputDimensions ** 2) * nodeCount) * 2) + (nodeCount ** 2) * (hiddenLayerCount - 1)
-weights = [random.randint(0, 10) for i in range(0, networkSize)]
+weights = [(random.randint(0, 10) / 10) for i in range(0, networkSize)]
 
 exampleNetwork = model.Network(hiddenLayerCount, nodeCount, 1, inputDimensions ** 2)
 exampleNetwork.loadWeights(weights)
@@ -28,9 +28,15 @@ maxHits = (boardDimensions ** 2) - boardDimensions
 generatedData = dataset.buildDataset(datasetSize, boardDimensions, maxHits)
 
 print(f"Generated dataset in {round(getSeconds() - startTime, 4)}s")
+startTime = getSeconds()
 
-print(generatedData[0][0])
-print(generatedData[0][1])
+print()
+print(f"User board: {generatedData[0][0]}")
+print(f"Board: {generatedData[0][1]}")
+print(exampleNetwork.runData(generatedData[0][0]))
+print()
+
+print(f"Ran network in {round(getSeconds() - startTime, 4)}s")
 
 #Maybe represent inputs as a vector
 #Include x coord, y coord, has been guessed, has been hit

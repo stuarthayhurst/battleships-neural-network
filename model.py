@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import structures
+import math
 
 class Network():
   def __init__(self, hiddenLayers, nodeCount, interfaceWidth, interfaceHeight):
@@ -79,4 +80,56 @@ class Network():
         print(f"   - Current Node -> {connectionId}: {node.getConnection(connectionId)}")
 
   def runData(self, inputData):
-    pass
+    if len(inputData) != self.interfaceSize:
+      print("Input data must match interface size")
+      return False
+
+    workingValues = [0 for i in range(self.interfaceSize)]
+
+    #Apply weights on input layer
+    for inputCount in range(self.interfaceSize):
+      dataPoint = inputData[inputCount]
+      inputNode = self.inputLayer.getNode(inputCount)
+      for i in range(self.nodesPerLayer):
+        weight = inputNode.getConnection(i)
+        workingValues[i] += dataPoint * weight
+
+    #Reduce working values
+    for i in range(self.nodesPerLayer):
+      workingValues[i] = workingValues[i] / self.nodesPerLayer
+
+    #Apply weights on hidden layers
+    for layerCount in range(self.hiddenLayerCount - 1):
+      #Copy working values to input, and reset working
+      inputValues = [i for i in workingValues]
+      workingValues = [0 for i in range(self.nodesPerLayer)]
+
+      #Iterate over every node in the layer
+      currentLayer = self.graph.getLayer(layerCount)
+      for nodeCount in range(self.nodesPerLayer):
+        #Apply the weights to the input values
+        currentNode = currentLayer.getNode(nodeCount)
+        for i in range(self.nodesPerLayer):
+          weight = currentNode.getConnection(i)
+          workingValues[i] += inputValues[nodeCount] * weight
+
+      #Divide by number of nodes to prevent inflation
+      for i in range(self.nodesPerLayer):
+        workingValues[i] = workingValues[i] / self.nodesPerLayer
+
+    #Apply weights on output layer
+    finalLayer = self.graph.getLayer(self.hiddenLayerCount - 1)
+    inputValues = [i for i in workingValues]
+    workingValues = [0 for i in range(self.interfaceSize)]
+    for inputCount in range(self.nodesPerLayer):
+      currentNode = finalLayer.getNode(inputCount)
+      for i in range(self.interfaceSize):
+        weight = currentNode.getConnection(i)
+        workingValues[i] += inputValues[nodeCount] * weight
+
+    #Reduce values and apply sigmoid activation function
+    for i in range(self.interfaceSize):
+      workingValues[i] = workingValues[i] / self.interfaceSize
+      workingValues[i] = 1 / (1 + (math.e ** workingValues[i]))
+
+    return workingValues
