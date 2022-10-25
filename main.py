@@ -62,12 +62,8 @@ if not exampleNetwork.loadDataset(generatedData):
 print(f"Loaded dataset in {round(getSeconds() - startTime, 4)}s")
 startTime = getSeconds()
 
-sampleData = exampleNetwork.sampleData(generatedData[0][0])
-print(f"Ran network in {round(getSeconds() - startTime, 4)}s")
-
-print(f"\nUser board: {generatedData[0][0]}")
-print(f"Board: {generatedData[0][1]}")
-print(f"Result: {sampleData}\n")
+exampleNetwork.trainNetwork(1)
+print(f"Trained network in {round(getSeconds() - startTime, 4)}s")
 
 #Save model weights to file
 trainedWeights = exampleNetwork.dumpNetwork()

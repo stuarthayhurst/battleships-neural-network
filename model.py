@@ -151,5 +151,14 @@ class Network():
 
     return True
 
-  def trainData(self):
-    pass
+  def trainDataPair(self, dataPair):
+    result = self.sampleData(dataPair[0])
+    print(f"Input    : {dataPair[0]}")
+    print(f"Expected : {dataPair[1]}")
+    print(f"Result   : {result}")
+
+  def trainNetwork(self, iterations):
+    dataCount = len(self.dataset)
+    for i in range(iterations):
+      dataPair = self.dataset[i % dataCount]
+      self.trainDataPair(dataPair)
