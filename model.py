@@ -91,9 +91,9 @@ class Network():
         weight = inputNode.getConnection(i)
         workingValues[i] += dataPoint * weight
 
-    #Reduce working values
+    #Apply activation function
     for i in range(self.nodesPerLayer):
-      workingValues[i] = workingValues[i] / self.nodesPerLayer
+      workingValues[i] = 1 / (1 + (math.e ** workingValues[i]))
 
     #Apply weights on hidden layers
     for layerCount in range(self.hiddenLayerCount - 1):
@@ -110,9 +110,9 @@ class Network():
           weight = currentNode.getConnection(i)
           workingValues[i] += inputValues[nodeCount] * weight
 
-      #Divide by number of nodes to prevent inflation
+      #Apply activation function to each neuron (once per layer)
       for i in range(self.nodesPerLayer):
-        workingValues[i] = workingValues[i] / self.nodesPerLayer
+        workingValues[i] = 1 / (1 + (math.e ** workingValues[i]))
 
     #Apply weights on output layer
     finalLayer = self.graph.getLayer(self.hiddenLayerCount - 1)
@@ -124,9 +124,8 @@ class Network():
         weight = currentNode.getConnection(i)
         workingValues[i] += inputValues[nodeCount] * weight
 
-    #Reduce values and apply sigmoid activation function
+    #Apply activation function to final layer
     for i in range(self.interfaceSize):
-      workingValues[i] = workingValues[i] / self.interfaceSize
       workingValues[i] = 1 / (1 + (math.e ** workingValues[i]))
 
     return workingValues

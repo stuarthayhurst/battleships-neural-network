@@ -28,8 +28,8 @@ except:
   print(f"Couldn't open {weightFile}")
 
 if not weightsValid:
-  print("Failed to load existing model, using new weights\n")
-  weights = [(random.randint(0, 10) / 10) for i in range(0, networkSize)]
+  print("Failed to load existing model, using new empty weights\n")
+  weights = [0 for i in range(0, networkSize)]
 else:
   print("Loaded existing model\n")
 
