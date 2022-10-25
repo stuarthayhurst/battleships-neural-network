@@ -48,10 +48,17 @@ generatedData = dataset.buildDataset(datasetSize, boardDimensions, maxHits)
 print(f"Generated dataset in {round(getSeconds() - startTime, 4)}s")
 startTime = getSeconds()
 
+if not exampleNetwork.loadDataset(generatedData):
+  print("Failed to load dataset")
+  exit(1)
+
+print(f"Loaded dataset in {round(getSeconds() - startTime, 4)}s")
+startTime = getSeconds()
+
 print()
 print(f"User board: {generatedData[0][0]}")
 print(f"Board: {generatedData[0][1]}")
-print(exampleNetwork.runData(generatedData[0][0]))
+print(exampleNetwork.sampleData(generatedData[0][0]))
 print()
 
 print(f"Ran network in {round(getSeconds() - startTime, 4)}s")

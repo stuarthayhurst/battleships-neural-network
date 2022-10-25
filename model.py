@@ -8,6 +8,9 @@ class Network():
     self.nodesPerLayer = nodeCount
     self.interfaceSize = interfaceHeight * interfaceWidth
 
+    #Create empty dataset
+    self.dataset = []
+
     #Create hidden layers as a graph
     self.graph = structures.Graph(self.hiddenLayerCount, self.nodesPerLayer)
 
@@ -76,7 +79,7 @@ class Network():
 
     return weights
 
-  def runData(self, inputData):
+  def sampleData(self, inputData):
     if len(inputData) != self.interfaceSize:
       print("Input data must match interface size")
       return False
@@ -129,3 +132,24 @@ class Network():
       workingValues[i] = 1 / (1 + (math.e ** workingValues[i]))
 
     return workingValues
+
+  def loadDataset(self, dataset):
+    for pair in dataset:
+      if len(pair) != 2:
+        print("Data must be paired")
+        return False
+
+      if pair[0] == None or pair[1] == None:
+        print("Data points can't be empty")
+        return False
+
+    #Copy passed dataset into structure
+    for i in range(len(dataset)):
+      self.dataset.append([None, None])
+      for j in [0, 1] :
+        self.dataset[i][j] = dataset[i][j]
+
+    return True
+
+  def trainData(self):
+    pass
