@@ -146,16 +146,26 @@ class Network():
     #Copy passed dataset into structure
     for i in range(len(dataset)):
       self.dataset.append([None, None])
-      for j in [0, 1] :
+      for j in [0, 1]:
         self.dataset[i][j] = dataset[i][j]
 
     return True
 
   def trainDataPair(self, dataPair):
+    #Run the data through the network
     result = self.sampleData(dataPair[0])
+
+    #Calculate the MSE of the prediction
+    meanError = 0
+    for i in range(len(dataPair[0])):
+      meanError += (dataPair[0][i] - dataPair[1][i]) ** 2
+    meanError = meanError / len(dataPair[0])
+
     print(f"Input    : {dataPair[0]}")
     print(f"Expected : {dataPair[1]}")
     print(f"Result   : {result}")
+    print(f"Error    : {meanError}")
+
 
   def trainNetwork(self, iterations):
     dataCount = len(self.dataset)
