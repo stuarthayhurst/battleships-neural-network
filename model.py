@@ -84,7 +84,7 @@ class Network():
       print("Input data must match interface size")
       return False
 
-    workingValues = [0 for i in range(self.interfaceSize)]
+    workingValues = [0 for i in range(self.nodesPerLayer)]
 
     #Apply weights on input layer
     for inputCount in range(self.interfaceSize):
