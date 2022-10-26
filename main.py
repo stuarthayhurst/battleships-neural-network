@@ -62,12 +62,15 @@ if not exampleNetwork.loadDataset(generatedData):
 print(f"Loaded dataset in {round(getSeconds() - startTime, 4)}s")
 startTime = getSeconds()
 
-"""
 
-exampleNetwork.trainNetwork(100)
+result = exampleNetwork.sampleData(generatedData[0][0], False)
+
+print()
+print(result)
+print()
+
+#exampleNetwork.trainNetwork(100)
 print(f"Trained network in {round(getSeconds() - startTime, 4)}s")
-
-"""
 
 #Save model weights to file
 trainedWeights = exampleNetwork.dumpNetwork()

@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 import structures
 import math
-
-import random
+import numpy
 
 class Network():
   def __init__(self, hiddenLayerCount, nodesPerLayer, inputSize):
@@ -23,39 +22,39 @@ class Network():
     weightIndex = 0
 
     #Load weights for input layer
-    for nodeCount in range(self.interfaceSize):
-      for targetNode in range(self.nodesPerLayer):
-        self.inputLayer.weights[0][nodeCount][targetNode] = weights[weightIndex]
+    for targetNode in range(self.nodesPerLayer):
+      for nodeCount in range(self.interfaceSize):
+        self.inputLayer.weights[0][targetNode][nodeCount] = weights[weightIndex]
         weightIndex += 1
 
     #Load weights for hidden layers
     for layerCount in range(self.hiddenLayerStructLength):
-      for nodeCount in range(self.nodesPerLayer):
-        for targetNode in range(self.nodesPerLayer):
-          self.hiddenLayers.weights[layerCount][nodeCount][targetNode] = weights[weightIndex]
+      for targetNode in range(self.nodesPerLayer):
+        for nodeCount in range(self.nodesPerLayer):
+          self.hiddenLayers.weights[layerCount][targetNode][nodeCount] = weights[weightIndex]
           weightIndex += 1
 
     #Load weights for output layer
-    for nodeCount in range(self.nodesPerLayer):
-      for targetNode in range(self.interfaceSize):
-        self.outputLayer.weights[0][nodeCount][targetNode] = weights[weightIndex]
+    for targetNode in range(self.interfaceSize):
+      for nodeCount in range(self.nodesPerLayer):
+        self.outputLayer.weights[0][targetNode][nodeCount] = weights[weightIndex]
         weightIndex += 1
 
   def dumpNetwork(self):
     weights = []
 
-    for node in self.inputLayer.weights[0]:
-      for targetNode in node:
-        weights.append(targetNode)
+    for targetNode in self.inputLayer.weights[0]:
+      for node in targetNode:
+        weights.append(node)
 
     for layer in self.hiddenLayers.weights:
-      for node in layer:
-        for targetNode in node:
-          weights.append(targetNode)
+      for targetNode in layer:
+        for node in targetNode:
+          weights.append(node)
 
-    for node in self.outputLayer.weights[0]:
-      for targetNode in node:
-        weights.append(targetNode)
+    for targetNode in self.outputLayer.weights[0]:
+      for node in targetNode:
+        weights.append(node)
 
     return weights
 
@@ -67,59 +66,45 @@ class Network():
       print("Input data must match interface size")
       return False
 
-    workingValuesList = [[] for i in range(self.hiddenLayerCount + 1)]
+    #Apply input layer weights
+    workingValues = []
+    workingValues.append([])
+    for targetNode in self.inputLayer.weights[0]:
+      result = numpy.dot(inputData, targetNode)
+      workingValues[0].append(result)
 
-    workingValuesList[0] = [0 for i in range(self.nodesPerLayer)]
-
-    #Apply weights on input layer
-    for inputCount in range(self.interfaceSize):
-      dataPoint = inputData[inputCount]
-      inputNode = self.inputLayer.getNode(inputCount)
-      for i in range(self.nodesPerLayer):
-        weight = inputNode.getConnection(i)
-        workingValuesList[0][i] += dataPoint * weight
-
-    #Apply activation function
+    #Apply activation function to input layer
     for i in range(self.nodesPerLayer):
-      workingValuesList[0][i] = self.activation(workingValuesList[0][i])
+      workingValues[0][i] = self.sigmoidActivation(workingValues[0][i])
 
-    #Apply weights on hidden layers
-    for layerCount in range(self.hiddenLayerCount - 1):
-      #Copy working values to input, and reset working
-      inputValues = [i for i in workingValuesList[layerCount]]
-      workingValuesList[layerCount + 1] = [0 for i in range(self.nodesPerLayer)]
+    #Apply hidden layer weights
+    layerCount = 0
+    for layer in self.hiddenLayers.weights:
+      workingValues.append([])
+      layerCount += 1
+      for targetNode in layer:
+        result = numpy.dot(workingValues[layerCount - 1], targetNode)
+        workingValues[layerCount].append(result)
 
-      #Iterate over every node in the layer
-      currentLayer = self.graph.getLayer(layerCount)
-      for nodeCount in range(self.nodesPerLayer):
-        #Apply the weights to the input values
-        currentNode = currentLayer.getNode(nodeCount)
-        for i in range(self.nodesPerLayer):
-          weight = currentNode.getConnection(i)
-          workingValuesList[layerCount + 1][i] += inputValues[nodeCount] * weight
-
-      #Apply activation function to each neuron (once per layer)
+      #Apply activation function to each hidden layer
       for i in range(self.nodesPerLayer):
-        workingValuesList[layerCount + 1][i] = self.activation(workingValuesList[layerCount + 1][i])
+        workingValues[layerCount][i] = self.sigmoidActivation(workingValues[layerCount][i])
 
-    #Apply weights on output layer
-    finalLayer = self.graph.getLayer(self.hiddenLayerCount - 1)
-    inputValues = [i for i in workingValuesList[self.hiddenLayerCount - 1]]
-    workingValuesList[self.hiddenLayerCount] = [0 for i in range(self.interfaceSize)]
-    for inputCount in range(self.nodesPerLayer):
-      currentNode = finalLayer.getNode(inputCount)
-      for i in range(self.interfaceSize):
-        weight = currentNode.getConnection(i)
-        workingValuesList[self.hiddenLayerCount][i] += inputValues[nodeCount] * weight
+    #Apply output layer weights
+    workingValues.append([])
+    for targetNode in self.outputLayer.weights[0]:
+      result = numpy.dot(workingValues[layerCount], targetNode)
+      workingValues[layerCount + 1].append(result)
 
     #Apply activation function to final layer
     for i in range(self.interfaceSize):
-      workingValuesList[self.hiddenLayerCount][i] = self.activation(workingValuesList[self.hiddenLayerCount][i])
+      finalLayer = len(workingValues) - 1
+      workingValues[finalLayer][i] = self.sigmoidActivation(workingValues[finalLayer][i])
 
     if returnWorkings:
-      return workingValuesList
+      return workingValues
     else:
-      return workingValuesList[self.hiddenLayerCount]
+      return workingValues[len(workingValues) - 1]
 
   def loadDataset(self, dataset):
     for pair in dataset:
