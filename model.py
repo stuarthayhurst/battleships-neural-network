@@ -117,14 +117,6 @@ class Network():
         self.inputLayer.weights[0][targetNode][previousNode] -= dEL * learningRate
         self.inputLayer.biases[0] -= dEB * learningRate
 
-#Tweak learning rate
-
-#dc/dw = previous layer activation * sigmoidDerivative(current layer pre-activation) * 2 * (current layer activation - expected)
-#dc/db = 1 * sigmoidDerivative(current layer pre-activation) * 2 * (current layer activation - expected)
-#dc/d(activation previous) = weight * sigmoidDerivative(current layer pre-activation) * 2 * (current layer activation - expected)
-
-#weight is the weight to the activated neuron
-
   def trainNetwork(self, iterations, learningRate):
     dataCount = len(self.dataset)
     for i in range(iterations):
@@ -136,4 +128,4 @@ class Network():
       self.trainDataPair(dataPair, learningRate, verbose)
 
       if verbose:
-        print(f"{i} / {iterations}")
+        print(f"{i} / {iterations} ({round((i / iterations) * 100, 2)}%)")
