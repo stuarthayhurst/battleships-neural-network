@@ -74,7 +74,7 @@ while not checkGrid(ships):
   if guess == -1:
     print("No guess")
     guess = random.randint(0, len(grid) - 1)
-    while grid[guess] == -1:
+    while grid[guess] != 0:
       guess = random.randint(0, len(grid) - 1)
 
   print(guess)
