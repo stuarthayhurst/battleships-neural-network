@@ -48,7 +48,7 @@ print(f"\nLoaded network in {round(getSeconds() - startTime, 4)}s")
 startTime = getSeconds()
 
 #Define dataset parameters and generate data
-datasetSize, boardDimensions = 1000, 7
+datasetSize, boardDimensions = 1, 7
 maxHits = (boardDimensions ** 2) - boardDimensions
 generatedData = dataset.buildDataset(datasetSize, boardDimensions, maxHits)
 
@@ -62,14 +62,8 @@ if not exampleNetwork.loadDataset(generatedData):
 print(f"Loaded dataset in {round(getSeconds() - startTime, 4)}s")
 startTime = getSeconds()
 
-
-result = exampleNetwork.sampleData(generatedData[0][0], False)
-
-print()
-print(result)
-print()
-
-#exampleNetwork.trainNetwork(100)
+iterations, learningRate = 1, 0.1
+exampleNetwork.trainNetwork(iterations, learningRate)
 print(f"Trained network in {round(getSeconds() - startTime, 4)}s")
 
 #Save model weights to file
