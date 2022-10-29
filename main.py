@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import time
+import time, random
 import model
 import dataset
 
@@ -24,7 +24,7 @@ def getWeights(weightFile, networkSize):
   #Load empty weights if file couldn't be used
   if not weightsValid:
     print("Failed to load existing model, using new empty weights")
-    weights = [1 for i in range(0, networkSize)]
+    weights = [random.randint(-10, 10) for i in range(networkSize)]
   else:
     print("Loaded existing model")
 
@@ -33,22 +33,22 @@ def getWeights(weightFile, networkSize):
 startTime = getSeconds()
 
 #Define network parameters
-hiddenLayerCount, nodesPerLayer, inputDimensions = 3, 10, 7
-networkSize = (((inputDimensions ** 2) * nodesPerLayer) * 2) + (nodesPerLayer ** 2) * (hiddenLayerCount - 1)
+inputDimensions = 7
+networkSize = (inputDimensions ** 2) ** 2
 
 #Load weights in from file, or generate default
 weightFile = "weights.dmp"
 weights = getWeights(weightFile, networkSize)
 
 #Create model and load weights
-exampleNetwork = model.Network(hiddenLayerCount, nodesPerLayer, inputDimensions ** 2)
+exampleNetwork = model.Network(inputDimensions ** 2)
 exampleNetwork.loadWeights(weights)
 
 print(f"\nLoaded network in {round(getSeconds() - startTime, 4)}s")
 startTime = getSeconds()
 
 #Define dataset parameters and generate data
-datasetSize, boardDimensions = 1, 7
+datasetSize, boardDimensions = 1000, 7
 maxHits = (boardDimensions ** 2) - boardDimensions
 generatedData = dataset.buildDataset(datasetSize, boardDimensions, maxHits)
 
@@ -62,7 +62,7 @@ if not exampleNetwork.loadDataset(generatedData):
 print(f"Loaded dataset in {round(getSeconds() - startTime, 4)}s")
 startTime = getSeconds()
 
-iterations, learningRate = 1, 0.1
+iterations, learningRate = 10000, 0.0001
 exampleNetwork.trainNetwork(iterations, learningRate)
 print(f"Trained network in {round(getSeconds() - startTime, 4)}s")
 

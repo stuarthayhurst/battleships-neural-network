@@ -1,42 +1,24 @@
 #!/usr/bin/python3
 import structures
-import numpy
+import numpy, random
 
 class Network():
-  def __init__(self, hiddenLayerCount, nodesPerLayer, inputSize):
-    self.hiddenLayerCount = hiddenLayerCount
-    self.hiddenLayerStructLength = hiddenLayerCount - 1
-    self.nodesPerLayer = nodesPerLayer
+  def __init__(self, inputSize):
     self.interfaceSize = inputSize
 
     #Create empty dataset
     self.dataset = []
 
-    #Create input, hidden and output layers as a graphs
-    self.hiddenLayers = structures.Graph(self.hiddenLayerCount - 1, self.nodesPerLayer, self.nodesPerLayer)
-    self.inputLayer = structures.Graph(1, self.interfaceSize, self.nodesPerLayer)
-    self.outputLayer = structures.Graph(1, self.nodesPerLayer, self.interfaceSize)
+    #Create input layer weights
+    self.inputLayer = structures.Graph(1, self.interfaceSize, self.interfaceSize)
 
   def loadWeights(self, weights):
     weightIndex = 0
 
     #Load weights for input layer
-    for targetNode in range(self.nodesPerLayer):
+    for targetNode in range(self.interfaceSize):
       for nodeCount in range(self.interfaceSize):
         self.inputLayer.weights[0][targetNode][nodeCount] = weights[weightIndex]
-        weightIndex += 1
-
-    #Load weights for hidden layers
-    for layerCount in range(self.hiddenLayerStructLength):
-      for targetNode in range(self.nodesPerLayer):
-        for nodeCount in range(self.nodesPerLayer):
-          self.hiddenLayers.weights[layerCount][targetNode][nodeCount] = weights[weightIndex]
-          weightIndex += 1
-
-    #Load weights for output layer
-    for targetNode in range(self.interfaceSize):
-      for nodeCount in range(self.nodesPerLayer):
-        self.outputLayer.weights[0][targetNode][nodeCount] = weights[weightIndex]
         weightIndex += 1
 
   def dumpNetwork(self):
@@ -46,19 +28,13 @@ class Network():
       for node in targetNode:
         weights.append(node)
 
-    for layer in self.hiddenLayers.weights:
-      for targetNode in layer:
-        for node in targetNode:
-          weights.append(node)
-
-    for targetNode in self.outputLayer.weights[0]:
-      for node in targetNode:
-        weights.append(node)
-
     return weights
 
   def sigmoidActivation(self, result):
-    return 1 / (1 + numpy.exp(-result))
+    if (result >= 0.5):
+      return 1
+    return 0
+    #return 1 / (1 + numpy.exp(-result))
 
   def sampleData(self, inputData, returnWorkings = False):
     if len(inputData) != self.interfaceSize:
@@ -76,37 +52,9 @@ class Network():
       workingValues[0].append(result + self.inputLayer.biases[0])
 
     #Apply activation function to input layer
-    for i in range(self.nodesPerLayer):
+    for i in range(self.interfaceSize):
       preActivationValues[0].append(workingValues[0][i])
       workingValues[0][i] = self.sigmoidActivation(workingValues[0][i])
-
-    #Apply hidden layer weights
-    layerCount = 0
-    for layer in self.hiddenLayers.weights:
-      workingValues.append([])
-      preActivationValues.append([])
-      layerCount += 1
-      for targetNode in layer:
-        result = numpy.dot(workingValues[layerCount - 1], targetNode)
-        workingValues[layerCount].append(result + self.hiddenLayers.biases[layerCount - 1])
-
-      #Apply activation function to each hidden layer
-      for i in range(self.nodesPerLayer):
-        preActivationValues[layerCount].append(workingValues[layerCount][i])
-        workingValues[layerCount][i] = self.sigmoidActivation(workingValues[layerCount][i])
-
-    #Apply output layer weights
-    workingValues.append([])
-    preActivationValues.append([])
-    for targetNode in self.outputLayer.weights[0]:
-      result = numpy.dot(workingValues[layerCount], targetNode)
-      workingValues[layerCount + 1].append(result + self.outputLayer.biases[0])
-
-    #Apply activation function to final layer
-    for i in range(self.interfaceSize):
-      finalLayer = len(workingValues) - 1
-      preActivationValues[finalLayer].append(workingValues[finalLayer][i])
-      workingValues[finalLayer][i] = self.sigmoidActivation(workingValues[finalLayer][i])
 
     if returnWorkings:
       return workingValues, preActivationValues
@@ -152,77 +100,32 @@ class Network():
 #DEBUG
     if verbose:
       print(f"Input    : {dataPair[0]}\n")
-      print(f"Expected : {dataPair[1]}\n")
-      print(f"Result   : {results}\n")
+      print(f"Expected : {[round(float(i), 2) for i in dataPair[1]]}\n")
+      print(f"Result   : {[round(float(i), 2) for i in results]}\n")
       print(f"Error    : {meanCosts}\n")
       print(f"Total    : {averageCost}\n")
 
 #DEBUG
-    print("a" + str(workingValues))
-    print("b" + str(preActivationValues))
+    #print("a" + str(workingValues))
+    #print("b" + str(preActivationValues))
+
+    for targetNode in range(self.interfaceSize):
+      for previousNode in range(self.interfaceSize):
+        result = results[targetNode]
+        offset = result - dataPair[1][i]
+        self.inputLayer.weights[0][targetNode][previousNode] += offset * learningRate
+
+    #for each output
+      #for each weight
+        #adjust based off of the error and activation
+        #If it guessed too low a probability, add the error (opposite for opposite)
+        #Multiply by learning rate of course (might need to reduce)
 
 #dc/dw = previous layer activation * sigmoidDerivative(current layer pre-activation) * 2 * (current layer activation - expected)
 #dc/db = 1 * sigmoidDerivative(current layer pre-activation) * 2 * (current layer activation - expected)
 #dc/d(activation previous) = weight * sigmoidDerivative(current layer pre-activation) * 2 * (current layer activation - expected)
 
 #weight is the weight to the activated neuron
-
-#TODO:
-# - Include input data in workings?
-# - Update formulae for multiple layers / neurons
-
-#Start on output layer
-
-    for i in range(self.interfaceSize):
-      pass
-
-#Move to hidden layers
-
-#Finish with input layer
-
-    return
-
-    for i in range(len(results)):
-      result = results[i]
-      error = meanErrors[i]
-
-      dpredic = 2 * (result - dataPair[1][i])
-      dlayer = sigD(result)
-
-      correctionFactor = dpredic * dlayer
-
-    #Iterate over final layer weights
-      finalLayer = self.graph.getLayer(self.hiddenLayerCount - 1)
-      for j in range(self.nodesPerLayer):
-        currentNode = finalLayer.getNode(j)
-        weight = currentNode.getConnection(i)
-
-        #weightCorrection = (weight * correctionFactor * learningRate)
-        weightCorrection = (result - dataPair[1][i]) * learningRate
-        #weightCorrection = error * result * learningRate
-        #print(weightCorrection)
-
-        currentNode.addConnection(i, (weight - weightCorrection))
-
-#Unify this and prev
-
-    for layerCount in range(self.hiddenLayerCount - 1, 0, -1):
-      currentLayer = self.graph.getLayer(layerCount - 1)
-      workingValuesIndex = len(workingValues) - (self.hiddenLayerCount - layerCount) - 1
-      currentWorkingValues = workingValues[workingValuesIndex]
-      #print(workingValuesIndex)
-      #print(len(workingValues) - 1)
-      #input()
-      for nodeCount in range(self.nodesPerLayer):
-        currentNode = currentLayer.getNode(nodeCount)
-        for targetNode in range(self.nodesPerLayer):
-          weight = currentNode.getConnection(targetNode)
-
-          #Calculate correction
-          weightC = sigD(currentWorkingValues[targetNode])
-
-          currentNode.addConnection(targetNode, weight - weightC)
-
 
   def trainNetwork(self, iterations, learningRate):
     dataCount = len(self.dataset)
@@ -231,5 +134,5 @@ class Network():
       if (i % 1 == 0):
         verbose = True
 
-      dataPair = self.dataset[i % dataCount]
+      dataPair = self.dataset[random.randint(0, dataCount - 1)]
       self.trainDataPair(dataPair, learningRate, verbose)

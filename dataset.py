@@ -51,7 +51,7 @@ def buildDataset(datasetSize, boardDimensions, maxHits):
   #Build the fresh boards
   for gridCount in range(datasetSize):
     dataset.append([None, None])
-    dataset[gridCount][0] = [[0.5 for x in range(boardDimensions)] for i in range(boardDimensions)]
+    dataset[gridCount][0] = [[0 for x in range(boardDimensions)] for i in range(boardDimensions)]
     dataset[gridCount][1] = [[0 for x in range(boardDimensions)] for i in range(boardDimensions)]
     placeShips(dataset[gridCount][1], boardDimensions, pieceInfo)
 
@@ -64,13 +64,13 @@ def buildDataset(datasetSize, boardDimensions, maxHits):
         x, y = random.randint(0, boardDimensions - 1), random.randint(0, boardDimensions - 1)
 
         #Check if the tile has been guessed yet
-        if dataset[gridCount][0][y][x] == 0.5:
+        if dataset[gridCount][0][y][x] == 0:
           #If the tile was a hit, mark with 1
           if dataset[gridCount][1][y][x] == 1:
             dataset[gridCount][0][y][x] = 1
-          #If the tile was a miss, mark with 0
+          #If the tile was a miss, mark with -1
           else:
-            dataset[gridCount][0][y][x] = 0
+            dataset[gridCount][0][y][x] = -1
 
           #Trigger next shot
           makingShot = False
