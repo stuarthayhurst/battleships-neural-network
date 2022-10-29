@@ -31,10 +31,7 @@ class Network():
     return weights
 
   def sigmoidActivation(self, result):
-    if (result >= 0.5):
-      return 1
-    return 0
-    #return 1 / (1 + numpy.exp(-result))
+    return 1 / (1 + numpy.exp(-result))
 
   def sampleData(self, inputData, returnWorkings = False):
     if len(inputData) != self.interfaceSize:
@@ -110,16 +107,18 @@ class Network():
     #print("b" + str(preActivationValues))
 
     for targetNode in range(self.interfaceSize):
+      result = results[targetNode]
+      offset = result - dataPair[1][targetNode]
+      dEP = 2 * (offset)
+      dPL = self.sigmoidDerivative(preActivationValues[0][targetNode])
+      dEB = dEP * dPL
       for previousNode in range(self.interfaceSize):
-        result = results[targetNode]
-        offset = result - dataPair[1][i]
-        self.inputLayer.weights[0][targetNode][previousNode] += offset * learningRate
+        dLW = dataPair[0][previousNode]
+        dEL = dEP * dPL * dLW
+        self.inputLayer.weights[0][targetNode][previousNode] -= dEL * learningRate
+        self.inputLayer.biases[0] -= dEB * learningRate
 
-    #for each output
-      #for each weight
-        #adjust based off of the error and activation
-        #If it guessed too low a probability, add the error (opposite for opposite)
-        #Multiply by learning rate of course (might need to reduce)
+#Tweak learning rate
 
 #dc/dw = previous layer activation * sigmoidDerivative(current layer pre-activation) * 2 * (current layer activation - expected)
 #dc/db = 1 * sigmoidDerivative(current layer pre-activation) * 2 * (current layer activation - expected)
@@ -131,8 +130,11 @@ class Network():
     dataCount = len(self.dataset)
     for i in range(iterations):
       verbose = False
-      if (i % 1 == 0):
+      if (i % 10 == 0):
         verbose = True
 
       dataPair = self.dataset[random.randint(0, dataCount - 1)]
       self.trainDataPair(dataPair, learningRate, verbose)
+
+      if verbose:
+        print(f"{i} / {iterations}")

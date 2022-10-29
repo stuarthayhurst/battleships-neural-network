@@ -62,7 +62,7 @@ if not exampleNetwork.loadDataset(generatedData):
 print(f"Loaded dataset in {round(getSeconds() - startTime, 4)}s")
 startTime = getSeconds()
 
-iterations, learningRate = 10000, 0.0001
+iterations, learningRate = 100000, 0.05
 exampleNetwork.trainNetwork(iterations, learningRate)
 print(f"Trained network in {round(getSeconds() - startTime, 4)}s")
 
