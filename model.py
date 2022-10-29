@@ -86,15 +86,13 @@ class Network():
 
     #Calculate the MSE of the prediction
     outputLength = len(dataPair[0])
-    meanCosts = [0 for i in range(outputLength)]
+    meanCosts = []
     averageCost = 0
     for i in range(outputLength):
-      meanCosts[i] = (results[i] - dataPair[1][i]) ** 2
+      meanCosts.append((results[i] - dataPair[1][i]) ** 2)
       averageCost += meanCosts[i]
     averageCost /= outputLength
 
-
-#DEBUG
     if verbose:
       print(f"Input    : {dataPair[0]}\n")
       print(f"Expected : {[round(float(i), 2) for i in dataPair[1]]}\n")
@@ -102,9 +100,10 @@ class Network():
       print(f"Error    : {meanCosts}\n")
       print(f"Total    : {averageCost}\n")
 
-#DEBUG
-    #print("a" + str(workingValues))
-    #print("b" + str(preActivationValues))
+    debug = False
+    if debug:
+      print(f"Finals: {workingValues}")
+      print(f"Inputs: {preActivationValues}")
 
     for targetNode in range(self.interfaceSize):
       result = results[targetNode]
@@ -130,7 +129,7 @@ class Network():
     dataCount = len(self.dataset)
     for i in range(iterations):
       verbose = False
-      if (i % 10 == 0):
+      if (i % 100 == 0):
         verbose = True
 
       dataPair = self.dataset[random.randint(0, dataCount - 1)]
