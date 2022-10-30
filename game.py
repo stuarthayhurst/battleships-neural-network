@@ -57,6 +57,7 @@ def checkGrid(ships):
   return True
 
 totalGuesses = 0
+randomGuesses = 0
 while not checkGrid(ships):
   totalGuesses += 1
   guesses = exampleNetwork.sampleData(grid)
@@ -73,6 +74,7 @@ while not checkGrid(ships):
 
   if guess == -1:
     print("No guess")
+    randomGuesses += 1
     guess = random.randint(0, len(grid) - 1)
     while grid[guess] != 0:
       guess = random.randint(0, len(grid) - 1)
@@ -99,3 +101,4 @@ while not checkGrid(ships):
     print()
 
 print(totalGuesses)
+print(f"Random guesses: {randomGuesses} / {totalGuesses}")
