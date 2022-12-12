@@ -37,6 +37,12 @@ class SignalHandler:
     print("Closed main window")
     Gtk.main_quit()
 
+class Tile(Gtk.Button):
+  def __init__(self, n):
+    self.element = Gtk.Button.new_with_label(n)
+    print(f"Created tile {n}")
+
+
 class BattleshipsWindow:
   def __init__(self, interfacePath, mainElement, title):
     #Create a window, load the UI and connect signals
@@ -48,15 +54,14 @@ class BattleshipsWindow:
 
   def buildGrid(self, elementId, size):
     for battlefield in self.window.builder.get_object(elementId).get_children():
-    #battlefield = self.window.builder.get_object(elementId);
       for i in range(size):
         battlefield.insert_row(0)
         battlefield.insert_column(0)
 
       for x in range(size):
         for y in range(size):
-          button = Gtk.Button.new_with_label(str((x * size) + y))
-          battlefield.attach(button, x, y, 1, 1)
+          tile = Tile(str((x * size) + y))
+          battlefield.attach(tile.element, x, y, 1, 1)
 
   def show(self):
     self.window.showAll()
