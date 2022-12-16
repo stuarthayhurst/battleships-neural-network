@@ -56,7 +56,6 @@ for sample in range(sampleSize):
   ships = generatedData[0][1]
 
   totalGuesses = 0
-  randomGuesses = 0
   while not checkGrid(ships):
     totalGuesses += 1
     guesses = exampleNetwork.sampleData(grid)
@@ -71,7 +70,6 @@ for sample in range(sampleSize):
     guess = maxGuessIndex
 
     if guess == -1:
-      randomGuesses += 1
       guess = random.randint(0, len(grid) - 1)
       while grid[guess] != 0:
         guess = random.randint(0, len(grid) - 1)
@@ -82,7 +80,6 @@ for sample in range(sampleSize):
     else:
       grid[guess] = -1
 
-  print(f"Random guesses: {randomGuesses} / {totalGuesses}")
   requiredGuesses += totalGuesses
 
 print(f"Average guesses: {requiredGuesses / sampleSize}")
