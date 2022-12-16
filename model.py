@@ -110,18 +110,18 @@ class Network():
       offset = result - dataPair[1][targetNode]
       dEP = 2 * (offset)
       dPL = self.sigmoidDerivative(preActivationValues[0][targetNode])
-      dEB = dEP * dPL
+      #dEB = dEP * dPL
       for previousNode in range(self.interfaceSize):
         dLW = dataPair[0][previousNode]
         dEL = dEP * dPL * dLW
         self.inputLayer.weights[0][targetNode][previousNode] -= dEL * learningRate
-        self.inputLayer.biases[0] -= dEB * learningRate
+        #self.inputLayer.biases[0] -= dEB * learningRate
 
   def trainNetwork(self, iterations, learningRate):
     dataCount = len(self.dataset)
     for i in range(iterations):
       verbose = False
-      if (i % 100 == 0):
+      if (i % 500 == 0):
         verbose = True
 
       dataPair = self.dataset[random.randint(0, dataCount - 1)]
