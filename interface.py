@@ -4,32 +4,33 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
-#Wrapper class for GTK
-class Window:
-  def __init__(self):
+class Element:
+  def __init__(self, uiFilePath, elementName):
     self.builder = Gtk.Builder()
-    self.window = None
-
-  def loadFile(self, uiFilePath):
     self.builder.add_from_file(uiFilePath)
+    self.element = self.builder.get_object(elementName)
 
-  def addWindow(self, windowElement, title = "Window"):
-    self.window = self.builder.get_object(windowElement)
+  def show(self):
+    self.element.show_all()
 
+#Wrapper class for GTK
+class Window(Element):
+  def __init__(self, uiFilePath):
+    super().__init__(uiFilePath, "main-window")
+
+  def setupWindow(self):
     #Create and set a header bar
     self.headerBar = Gtk.HeaderBar()
-    self.headerBar.set_title(title)
+    self.headerBar.set_title("Window")
     self.headerBar.set_show_close_button(True)
-    self.window.set_titlebar(self.headerBar)
+    self.headerBar.show_all()
+    self.element.set_titlebar(self.headerBar)
 
   def addSignalHandler(self, signalHandler):
     self.builder.connect_signals(signalHandler())
 
   def setTitle(self, title):
     self.headerBar.set_title(title)
-
-  def showAll(self):
-    self.window.show_all()
 
 #Signal handler callbacks
 class SignalHandler:
@@ -42,18 +43,11 @@ class Tile(Gtk.Button):
     self.element = Gtk.Button.new_with_label(n)
     print(f"Created tile {n}")
 
+class Battlefield(Element):
+  def __init__(self, interfacePath, size):
+    super().__init__(interfacePath, "battlefield")
 
-class BattleshipsWindow:
-  def __init__(self, interfacePath, mainElement, title):
-    #Create a window, load the UI and connect signals
-    self.window = Window()
-    self.window.loadFile(interfacePath)
-    self.window.addWindow(mainElement)
-    self.window.addSignalHandler(SignalHandler)
-    self.window.setTitle(title)
-
-  def buildGrid(self, elementId, size):
-    for battlefield in self.window.builder.get_object(elementId).get_children():
+    for battlefield in self.element.get_children():
       for i in range(size):
         battlefield.insert_row(0)
         battlefield.insert_column(0)
@@ -63,5 +57,24 @@ class BattleshipsWindow:
           tile = Tile(str((x * size) + y))
           battlefield.attach(tile.element, x, y, 1, 1)
 
+class BattleshipsWindow(Window):
+  def __init__(self, interfacePath, title):
+    #Create a window, load the UI and connect signals
+    super().__init__(interfacePath)
+    self.setupWindow()
+    self.addSignalHandler(SignalHandler)
+    self.setTitle(title)
+
+    #Content elements
+    self.content = self.builder.get_object("main-content")
+    self.battlefield = None
+
+  def createBattlefield(self, interfacePath, size):
+    self.battlefield = Battlefield(interfacePath, size)
+    self.content.pack_start(self.battlefield.element, True, True, 0)
+
+  def setBattlefieldActive(self):
+    self.battlefield.show()
+
   def show(self):
-    self.window.showAll()
+    self.element.show()

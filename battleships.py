@@ -7,8 +7,10 @@ from gi.repository import Gtk
 import interface
 
 #Create window, set title and begin event loop
-window = interface.BattleshipsWindow("main-window.ui", "main-window", "Battleships")
-window.buildGrid('battlefield', 7)
+window = interface.BattleshipsWindow("ui/main-window.ui", "Battleships")
+window.createBattlefield("ui/battlefields.ui", 7)
+
+window.setBattlefieldActive()
 
 window.show()
 Gtk.main()
