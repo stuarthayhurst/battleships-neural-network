@@ -18,6 +18,9 @@ class Window(Element):
   def __init__(self, uiFilePath):
     super().__init__(uiFilePath, "main-window")
 
+  def setTitle(self, title):
+    self.headerBar.set_title(title)
+
   def setupWindow(self):
     #Create and set a header bar
     self.headerBar = Gtk.HeaderBar()
@@ -26,18 +29,30 @@ class Window(Element):
     self.headerBar.show_all()
     self.element.set_titlebar(self.headerBar)
 
-    #Add icons to buttons
+    #Add icons to buttons and connect signals
     image = Gtk.Image.new_from_file("assets/sound-on.png")
-    self.builder.get_object("sound-toggle-button").set_image(image)
+    soundButton = self.builder.get_object("sound-toggle-button")
+    soundButton.set_image(image)
+    soundButton.connect("clicked", self.soundTogglePressed)
 
     image = Gtk.Image.new_from_file("assets/statistics.png")
-    self.builder.get_object("statistics-button").set_image(image)
+    statsButton = self.builder.get_object("statistics-button")
+    statsButton.set_image(image)
+    statsButton.connect("clicked", self.statsButtonPressed)
 
     image = Gtk.Image.new_from_file("assets/achievements.png")
-    self.builder.get_object("achievements-button").set_image(image)
+    achievementsButton = self.builder.get_object("achievements-button")
+    achievementsButton.set_image(image)
+    achievementsButton.connect("clicked", self.achievementsButtonPressed)
 
-  def setTitle(self, title):
-    self.headerBar.set_title(title)
+  def soundTogglePressed(self, button):
+    print("Sound toggle pressed")
+
+  def statsButtonPressed(self, button):
+    print("Statistics button pressed")
+
+  def achievementsButtonPressed(self, button):
+    print("Achievements button pressed")
 
 class Tile(Gtk.Button):
   def __init__(self, n):
