@@ -26,6 +26,16 @@ class Window(Element):
     self.headerBar.show_all()
     self.element.set_titlebar(self.headerBar)
 
+    #Add icons to buttons
+    image = Gtk.Image.new_from_file("assets/sound-on.png")
+    self.builder.get_object("sound-toggle-button").set_image(image)
+
+    image = Gtk.Image.new_from_file("assets/statistics.png")
+    self.builder.get_object("statistics-button").set_image(image)
+
+    image = Gtk.Image.new_from_file("assets/achievements.png")
+    self.builder.get_object("achievements-button").set_image(image)
+
   def addSignalHandler(self, signalHandler):
     self.builder.connect_signals(signalHandler())
 
