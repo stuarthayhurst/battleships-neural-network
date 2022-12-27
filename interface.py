@@ -36,17 +36,8 @@ class Window(Element):
     image = Gtk.Image.new_from_file("assets/achievements.png")
     self.builder.get_object("achievements-button").set_image(image)
 
-  def addSignalHandler(self, signalHandler):
-    self.builder.connect_signals(signalHandler())
-
   def setTitle(self, title):
     self.headerBar.set_title(title)
-
-#Signal handler callbacks
-class SignalHandler:
-  def onDestroy(self, *args):
-    print("Closed main window")
-    Gtk.main_quit()
 
 class Tile(Gtk.Button):
   def __init__(self, n):
@@ -76,7 +67,6 @@ class BattleshipsWindow(Window):
     #Create a window, load the UI and connect signals
     super().__init__(interfacePath)
     self.setupWindow()
-    self.addSignalHandler(SignalHandler)
     self.setTitle(title)
 
     self.screens = []

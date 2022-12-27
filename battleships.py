@@ -14,6 +14,8 @@ battlefieldId = window.createBattlefield("ui/battlefields.ui", 7)
 
 window.setActiveScreen(setupId)
 
+window.element.connect("destroy", Gtk.main_quit)
+
 window.show()
 Gtk.main()
 
