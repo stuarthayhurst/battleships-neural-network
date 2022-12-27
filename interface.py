@@ -57,6 +57,10 @@ class Battlefield(Element):
           tile = Tile(str((x * size) + y))
           battlefield.attach(tile.element, x, y, 1, 1)
 
+class Setup(Element):
+  def __init__(self, interfacePath):
+    super().__init__(interfacePath, "setup")
+
 class BattleshipsWindow(Window):
   def __init__(self, interfacePath, title):
     #Create a window, load the UI and connect signals
@@ -65,16 +69,33 @@ class BattleshipsWindow(Window):
     self.addSignalHandler(SignalHandler)
     self.setTitle(title)
 
+    self.screens = []
+
     #Content elements
     self.content = self.builder.get_object("main-content")
-    self.battlefield = None
+    self.activeScreenId = None
+
+  def createSetup(self, interfacePath):
+    self.screens.append(Setup(interfacePath))
+    screenId = len(self.screens) - 1
+    self.content.pack_start(self.screens[screenId].element, True, True, 0)
+    self.screens[screenId].element.hide()
+
+    return screenId
 
   def createBattlefield(self, interfacePath, size):
-    self.battlefield = Battlefield(interfacePath, size)
-    self.content.pack_start(self.battlefield.element, True, True, 0)
+    self.screens.append(Battlefield(interfacePath, size))
+    screenId = len(self.screens) - 1
+    self.content.pack_start(self.screens[screenId].element, True, True, 0)
+    self.screens[screenId].element.hide()
 
-  def setBattlefieldActive(self):
-    self.battlefield.show()
+    return screenId
+
+  def setActiveScreen(self, screenId):
+    if (self.activeScreenId != None):
+      self.screens[self.activeScreenId].element.hide()
+    self.screens[screenId].show()
+    self.activeScreenId = screenId
 
   def show(self):
     self.element.show()

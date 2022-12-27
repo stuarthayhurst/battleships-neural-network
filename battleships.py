@@ -8,9 +8,11 @@ import interface
 
 #Create window, set title and begin event loop
 window = interface.BattleshipsWindow("ui/main-window.ui", "Battleships")
-window.createBattlefield("ui/battlefields.ui", 7)
 
-window.setBattlefieldActive()
+setupId = window.createSetup("ui/setup.ui")
+battlefieldId = window.createBattlefield("ui/battlefields.ui", 7)
+
+window.setActiveScreen(setupId)
 
 window.show()
 Gtk.main()

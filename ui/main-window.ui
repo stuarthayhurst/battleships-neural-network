@@ -12,6 +12,8 @@
         <property name="margin-start">20</property>
         <property name="margin-end">20</property>
         <property name="margin-top">20</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkBox" id="control-bar">
@@ -76,10 +78,10 @@
           <object class="GtkBox" id="main-content">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="halign">center</property>
             <property name="margin-top">20</property>
             <property name="margin-bottom">20</property>
             <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
             <property name="orientation">vertical</property>
             <child>
               <placeholder/>
@@ -88,6 +90,7 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
+            <property name="pack-type">end</property>
             <property name="position">1</property>
           </packing>
         </child>
