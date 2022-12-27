@@ -74,8 +74,54 @@ class Battlefield(Element):
           battlefield.attach(tile.element, x, y, 1, 1)
 
 class Setup(Element):
-  def __init__(self, interfacePath):
+  def __init__(self, interfacePath, window):
     super().__init__(interfacePath, "setup")
+
+    self.parentWindow = window
+    self.opponentSelector = self.builder.get_object("opponent-multiplayer")
+    self.difficultyArea = self.builder.get_object("difficulty-area")
+    self.difficultyCombo = self.builder.get_object("difficulty-combo")
+    self.gamemodeCombo = self.builder.get_object("gamemode-combo")
+    self.startButton = self.builder.get_object("start-button")
+
+    self.startButton.connect("clicked", self.startButtonPressed)
+    self.opponentSelector.connect("toggled", self.opponentSelectorChanged)
+
+  def showError(self, errorMessage):
+    errorWindow = Gtk.MessageDialog(self.parentWindow, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, errorMessage)
+    errorWindow.run()
+    errorWindow.destroy()
+
+  def startButtonPressed(self, button):
+    #Get value of opponent selector
+    opponent = "computer"
+    if (self.opponentSelector.get_active()):
+      opponent = "multiplayer"
+
+    #Get value of difficulty selector
+    difficulty = self.difficultyCombo.get_active()
+
+    #Get value of game mode
+    gamemode = self.gamemodeCombo.get_active()
+
+    print("Game settings:")
+    print(f" - Opponent: {opponent}")
+    print(f" - Difficulty: {difficulty}")
+    print(f" - Game mode: {gamemode}")
+
+    #Display an error if playing against the computer with no difficulty selected
+    if (difficulty == -1) and (opponent == "computer"):
+      self.showError("You must select a difficulty")
+
+    #Display an error if no game mode was selected
+    if (gamemode == -1):
+      self.showError("You must select a game mode")
+
+  def opponentSelectorChanged(self, button):
+    if (button.get_active()):
+      self.difficultyArea.set_sensitive(False)
+    else:
+      self.difficultyArea.set_sensitive(True)
 
 class BattleshipsWindow(Window):
   def __init__(self, interfacePath, title):
@@ -91,7 +137,7 @@ class BattleshipsWindow(Window):
     self.activeScreenId = None
 
   def createSetup(self, interfacePath):
-    self.screens.append(Setup(interfacePath))
+    self.screens.append(Setup(interfacePath, self.element))
     screenId = len(self.screens) - 1
     self.content.pack_start(self.screens[screenId].element, True, True, 0)
     self.screens[screenId].element.hide()

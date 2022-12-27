@@ -75,7 +75,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="difficulty-area">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <child>
@@ -91,13 +91,13 @@
           </packing>
         </child>
         <child>
-          <object class="GtkComboBoxText">
+          <object class="GtkComboBoxText" id="difficulty-combo">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <items>
-              <item translatable="yes">A</item>
-              <item translatable="yes">B</item>
-              <item translatable="yes">C</item>
+              <item translatable="yes">Easy</item>
+              <item translatable="yes">Normal</item>
+              <item translatable="yes">Hard</item>
             </items>
           </object>
           <packing>
@@ -142,12 +142,13 @@
           </packing>
         </child>
         <child>
-          <object class="GtkComboBoxText">
+          <object class="GtkComboBoxText" id="gamemode-combo">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <items>
-              <item translatable="yes">A</item>
-              <item translatable="yes">B</item>
+              <item translatable="yes">Normal</item>
+              <item translatable="yes">Streaks</item>
+              <item translatable="yes">Single ship type</item>
             </items>
           </object>
           <packing>
@@ -165,11 +166,12 @@
       </packing>
     </child>
     <child>
-      <object class="GtkButton">
-        <property name="label" translatable="yes">button</property>
+      <object class="GtkButton" id="start-button">
+        <property name="label" translatable="yes">Start</property>
         <property name="visible">True</property>
         <property name="can-focus">True</property>
         <property name="receives-default">True</property>
+        <property name="tooltip-text" translatable="yes">Start game</property>
         <property name="halign">end</property>
       </object>
       <packing>
