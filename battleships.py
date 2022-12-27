@@ -6,19 +6,13 @@ from gi.repository import Gtk
 
 import interface
 
-#Create window, set title and begin event loop
+#Setup window
 window = interface.BattleshipsWindow("ui/main-window.ui", "Battleships")
-
 setupId = window.createSetup("ui/setup.ui")
 battlefieldId = window.createBattlefield("ui/battlefields.ui", 7)
-
 window.setActiveScreen(setupId)
 
+#Show the window and start the mainloop
 window.element.connect("destroy", Gtk.main_quit)
-
 window.show()
 Gtk.main()
-
-
-
-#Add validation to passed params
