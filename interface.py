@@ -54,25 +54,6 @@ class Window(Element):
   def achievementsButtonPressed(self, button):
     print("Achievements button pressed")
 
-class Tile(Gtk.Button):
-  def __init__(self, n):
-    self.element = Gtk.Button.new_with_label(n)
-    print(f"Created tile {n}")
-
-class Battlefield(Element):
-  def __init__(self, interfacePath, size):
-    super().__init__(interfacePath, "battlefield")
-
-    for battlefield in self.element.get_children():
-      for i in range(size):
-        battlefield.insert_row(0)
-        battlefield.insert_column(0)
-
-      for x in range(size):
-        for y in range(size):
-          tile = Tile(str((x * size) + y))
-          battlefield.attach(tile.element, x, y, 1, 1)
-
 class Setup(Element):
   def __init__(self, interfacePath, window):
     super().__init__(interfacePath, "setup")
@@ -123,6 +104,74 @@ class Setup(Element):
     else:
       self.difficultyArea.set_sensitive(True)
 
+class Placement(Element):
+  def __init__(self, interfacePath):
+    super().__init__(interfacePath, "placement")
+
+    self.rotateButton = self.builder.get_object("rotate-button")
+    self.confirmButton = self.builder.get_object("confirm-button")
+
+    image = Gtk.Image.new_from_file("assets/rotate.png")
+    self.rotateButton.set_image(image)
+
+    self.rotateButton.connect("clicked", self.rotateButtonPressed)
+    self.confirmButton.connect("clicked", self.confirmButtonPressed)
+
+    self.userBoard = self.builder.get_object("user-board")
+    for i in range(7):
+      self.userBoard.insert_row(0)
+      self.userBoard.insert_column(0)
+
+    for x in range(7):
+      for y in range(7):
+        tile = Tile(str((x * 7) + y))
+        self.userBoard.attach(tile.element, x, y, 1, 1)
+
+    self.ships = [self.builder.get_object(f"ship-{i + 1}") for i in range(5)]
+
+    shipLengths = [5, 4, 3, 3, 2]
+    for i in range(len(self.ships)):
+      self.ships[i].add(self.createShipElement(shipLengths[i]))
+
+  def rotateButtonPressed(self, button):
+    print("Rotate pressed")
+
+  def confirmButtonPressed(self, button):
+    print("Confirm button pressed")
+
+  def createShipElement(self, shipLength):
+    container = Gtk.Box()
+    for i in range(shipLength):
+      piece = Gtk.Image.new_from_file("assets/placed.png")
+      container.add(piece)
+
+    return container
+
+class Tile():
+  def __init__(self, tileId):
+    self.tileId = tileId
+    self.element = Gtk.Button.new_with_label("")
+    self.element.connect("clicked", self.tilePressed)
+
+    print(f"Created tile {self.tileId}")
+
+  def tilePressed(self, button):
+    print(f"Pressed tile {self.tileId}")
+
+class Battlefield(Element):
+  def __init__(self, interfacePath, size):
+    super().__init__(interfacePath, "battlefield")
+
+    for battlefield in self.element.get_children():
+      for i in range(size):
+        battlefield.insert_row(0)
+        battlefield.insert_column(0)
+
+      for x in range(size):
+        for y in range(size):
+          tile = Tile(str((x * size) + y))
+          battlefield.attach(tile.element, x, y, 1, 1)
+
 class BattleshipsWindow(Window):
   def __init__(self, interfacePath, title):
     #Create a window, load the UI and connect signals
@@ -138,6 +187,14 @@ class BattleshipsWindow(Window):
 
   def createSetup(self, interfacePath):
     self.screens.append(Setup(interfacePath, self.element))
+    screenId = len(self.screens) - 1
+    self.content.pack_start(self.screens[screenId].element, True, True, 0)
+    self.screens[screenId].element.hide()
+
+    return screenId
+
+  def createPlacement(self, interfacePath):
+    self.screens.append(Placement(interfacePath))
     screenId = len(self.screens) - 1
     self.content.pack_start(self.screens[screenId].element, True, True, 0)
     self.screens[screenId].element.hide()

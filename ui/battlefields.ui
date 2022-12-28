@@ -6,38 +6,11 @@
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <child>
-      <!-- n-columns=3 n-rows=3 -->
+      <!-- n-columns=0 n-rows=0 -->
       <object class="GtkGrid" id="battlefield-left">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="margin-end">10</property>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -46,38 +19,11 @@
       </packing>
     </child>
     <child>
-      <!-- n-columns=3 n-rows=3 -->
+      <!-- n-columns=0 n-rows=0 -->
       <object class="GtkGrid" id="battlefield-right">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="margin-start">10</property>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
       </object>
       <packing>
         <property name="expand">False</property>
