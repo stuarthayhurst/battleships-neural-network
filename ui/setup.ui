@@ -149,6 +149,7 @@
               <item translatable="yes">Normal</item>
               <item translatable="yes">Streaks</item>
               <item translatable="yes">Single ship type</item>
+              <item translatable="yes">Power-ups</item>
             </items>
           </object>
           <packing>

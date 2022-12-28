@@ -14,9 +14,10 @@ class Element:
     self.element.show_all()
 
 class Screen(Element):
-  def __init__(self, namedScreenPairs, interfacePath, elementName):
+  def __init__(self, namedScreenIds, game, interfacePath, elementName):
     super().__init__(interfacePath, elementName)
-    self.namedScreenPairs = namedScreenPairs
+    self.namedScreenIds = namedScreenIds
+    self.game = game
 
 class Tile():
   def __init__(self, tileId):

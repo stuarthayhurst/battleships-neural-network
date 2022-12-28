@@ -5,12 +5,13 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
 import classes
-  
-class Setup(classes.Screen):
-  def __init__(self, namedScreenIds, interfacePath, window):
-    super().__init__(namedScreenIds, interfacePath, "setup")
 
-    self.parentWindow = window
+class Setup(classes.Screen):
+  def __init__(self, namedScreenIds, game, interfacePath, window):
+    super().__init__(namedScreenIds, game, interfacePath, "setup")
+
+    self.battleshipsWindow = window
+    self.parentWindow = window.element
     self.opponentSelector = self.builder.get_object("opponent-multiplayer")
     self.difficultyArea = self.builder.get_object("difficulty-area")
     self.difficultyCombo = self.builder.get_object("difficulty-combo")
@@ -31,24 +32,50 @@ class Setup(classes.Screen):
     if (self.opponentSelector.get_active()):
       opponent = "multiplayer"
 
-    #Get value of difficulty selector
+    #Get value of difficulty selector and game mode
     difficulty = self.difficultyCombo.get_active()
-
-    #Get value of game mode
     gamemode = self.gamemodeCombo.get_active()
+    failed = False
+
+    #Display an error if playing against the computer with no difficulty selected
+    if (difficulty == -1) and (opponent == "computer"):
+      self.showError("You must select a difficulty")
+      failed = True
+
+    #Display an error if no game mode was selected
+    if (gamemode == -1):
+      self.showError("You must select a game mode")
+      failed = True
+
+    if failed:
+      return
+
+    #Dictionaries to convert numbered settings to strings
+    translateDifficulty = {
+      0: "easy",
+      1: "normal",
+      2: "hard"
+    }
+    translateGamemode = {
+      0: "normal",
+      1: "streaks",
+      2: "single-ship",
+      3: "powerups"
+    }
+
+    self.game.gameSettings["opponent"] = opponent
+    if (opponent == "multiplayer"):
+      self.game.gameSettings["difficulty"] = "none"
+    else:
+      self.game.gameSettings["difficulty"] = translateDifficulty[difficulty]
+    self.game.gameSettings["gamemode"] = translateGamemode[gamemode]
+
+    self.battleshipsWindow.setActiveScreen(self.namedScreenIds["placement"])
 
     print("Game settings:")
     print(f" - Opponent: {opponent}")
     print(f" - Difficulty: {difficulty}")
     print(f" - Game mode: {gamemode}")
-
-    #Display an error if playing against the computer with no difficulty selected
-    if (difficulty == -1) and (opponent == "computer"):
-      self.showError("You must select a difficulty")
-
-    #Display an error if no game mode was selected
-    if (gamemode == -1):
-      self.showError("You must select a game mode")
 
   def opponentSelectorChanged(self, button):
     if (button.get_active()):
@@ -57,8 +84,8 @@ class Setup(classes.Screen):
       self.difficultyArea.set_sensitive(True)
 
 class Placement(classes.Screen):
-  def __init__(self, namedScreenPairs, interfacePath):
-    super().__init__(namedScreenPairs, interfacePath, "placement")
+  def __init__(self, namedScreenPairs, game, interfacePath):
+    super().__init__(namedScreenPairs, game, interfacePath, "placement")
 
     self.rotateButton = self.builder.get_object("rotate-button")
     self.confirmButton = self.builder.get_object("confirm-button")
@@ -87,6 +114,7 @@ class Placement(classes.Screen):
 
   def rotateButtonPressed(self, button):
     print("Rotate pressed")
+    print(self.game.gameSettings)
 
   def confirmButtonPressed(self, button):
     print("Confirm button pressed")
@@ -100,8 +128,8 @@ class Placement(classes.Screen):
     return container
 
 class Battlefield(classes.Screen):
-  def __init__(self, namedScreenPairs, interfacePath, size):
-    super().__init__(namedScreenPairs, interfacePath, "battlefield")
+  def __init__(self, namedScreenPairs, game, interfacePath, size):
+    super().__init__(namedScreenPairs, game, interfacePath, "battlefield")
 
     for battlefield in self.element.get_children():
       for i in range(size):
