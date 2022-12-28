@@ -7,11 +7,9 @@ from gi.repository import Gtk
 import classes
 
 class Setup(classes.Screen):
-  def __init__(self, namedScreenIds, game, interfacePath, window):
-    super().__init__(namedScreenIds, game, interfacePath, "setup")
+  def __init__(self, battleshipsWindow, interfacePath):
+    super().__init__(battleshipsWindow, interfacePath, "setup")
 
-    self.battleshipsWindow = window
-    self.parentWindow = window.element
     self.opponentSelector = self.builder.get_object("opponent-multiplayer")
     self.difficultyArea = self.builder.get_object("difficulty-area")
     self.difficultyCombo = self.builder.get_object("difficulty-combo")
@@ -20,11 +18,6 @@ class Setup(classes.Screen):
 
     self.startButton.connect("clicked", self.startButtonPressed)
     self.opponentSelector.connect("toggled", self.opponentSelectorChanged)
-
-  def showError(self, errorMessage):
-    errorWindow = Gtk.MessageDialog(self.parentWindow, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, errorMessage)
-    errorWindow.run()
-    errorWindow.destroy()
 
   def startButtonPressed(self, button):
     #Get value of opponent selector
@@ -84,8 +77,14 @@ class Setup(classes.Screen):
       self.difficultyArea.set_sensitive(True)
 
 class Placement(classes.Screen):
-  def __init__(self, namedScreenPairs, game, interfacePath):
-    super().__init__(namedScreenPairs, game, interfacePath, "placement")
+  def __init__(self, battleshipsWindow, interfacePath):
+    super().__init__(battleshipsWindow, interfacePath, "placement")
+    self.isActiveShipRotated = False
+    self.activeShipIndex = 0
+    self.targetTile = -1
+
+    #Accessed by [row][column]
+    self.grid = [[0 for i in range(7)] for j in range(7)]
 
     self.rotateButton = self.builder.get_object("rotate-button")
     self.confirmButton = self.builder.get_object("confirm-button")
@@ -103,21 +102,93 @@ class Placement(classes.Screen):
 
     for x in range(7):
       for y in range(7):
-        tile = classes.Tile(str((x * 7) + y))
+        tile = classes.Tile(self, str((x * 7) + y))
         self.userBoard.attach(tile.element, x, y, 1, 1)
 
     self.ships = [self.builder.get_object(f"ship-{i + 1}") for i in range(5)]
+    self.shipRotateIcons = []
 
-    shipLengths = [5, 4, 3, 3, 2]
+    self.shipLengths = [5, 4, 3, 3, 2]
     for i in range(len(self.ships)):
-      self.ships[i].add(self.createShipElement(shipLengths[i]))
+      self.ships[i].add(self.createShipElement(self.shipLengths[i]))
+      #Reuse image from rotate button
+      self.shipRotateIcons.append(Gtk.Image.new_from_file("assets/rotate.png"))
+      self.ships[i].add(self.shipRotateIcons[i])
+
+  def show(self):
+    self.element.show_all()
+    for i in range(len(self.shipRotateIcons)):
+      self.shipRotateIcons[i].hide()
+
+  def updateActiveShipRotated(self):
+    if self.isActiveShipRotated:
+      self.shipRotateIcons[self.activeShipIndex].show()
+    else:
+      self.shipRotateIcons[self.activeShipIndex].hide()
 
   def rotateButtonPressed(self, button):
-    print("Rotate pressed")
-    print(self.game.gameSettings)
+    self.isActiveShipRotated = not self.isActiveShipRotated
+    self.updateActiveShipRotated()
 
   def confirmButtonPressed(self, button):
-    print("Confirm button pressed")
+    if self.targetTile == -1:
+      self.showError("You must select a tile to place the ship")
+      return
+
+    shipLength = self.shipLengths[self.activeShipIndex]
+
+    self.targetTile = self.targetTile
+    targetCol = self.targetTile // 7
+    targetRow = self.targetTile % 7
+
+    #Check ship fits within the board
+    if self.isActiveShipRotated:
+      if targetRow + (shipLength) > 7:
+        self.showError("Invalid location, ship won't fit on the board")
+        return
+    else:
+      if targetCol + (shipLength) > 7:
+        self.showError("Invalid location, ship won't fit on the board")
+        return
+
+    #Check the ship doesn't collide with an existing ship
+    if self.isActiveShipRotated:
+      for i in range(shipLength):
+        if self.grid[targetRow + i][targetCol] == 1:
+          self.showError("Invalid location, ship would collide with another ship")
+          return
+    else:
+      for i in range(shipLength):
+        if self.grid[targetRow][targetCol + i] == 1:
+          self.showError("Invalid location, ship would collide with another ship")
+          return
+
+    #Hide the currently active ship and rotate symbol from the menu
+    self.ships[self.activeShipIndex].hide()
+    self.shipRotateIcons[self.activeShipIndex].hide()
+
+    #Write the active ship to the board
+    if self.isActiveShipRotated:
+      for i in range(shipLength):
+        self.grid[targetRow + i][targetCol] = 1
+        self.userBoard.get_child_at(targetCol, targetRow + i).destroy()
+        image = Gtk.Image.new_from_file("assets/placed.png")
+        image.show()
+        self.userBoard.attach(image, targetCol, targetRow + i, 1, 1)
+    else:
+      for i in range(shipLength):
+        self.grid[targetRow][targetCol + i] = 1
+        self.userBoard.get_child_at(targetCol + i, targetRow).destroy()
+        image = Gtk.Image.new_from_file("assets/placed.png")
+        image.show()
+        self.userBoard.attach(image, targetCol + i, targetRow, 1, 1)
+
+    #Select the next ship
+    self.activeShipIndex += 1
+
+    #Reset the ship rotation and target tile
+    self.isActiveShipRotated = False
+    self.targetTile = -1
 
   def createShipElement(self, shipLength):
     container = Gtk.Box()
@@ -128,8 +199,8 @@ class Placement(classes.Screen):
     return container
 
 class Battlefield(classes.Screen):
-  def __init__(self, namedScreenPairs, game, interfacePath, size):
-    super().__init__(namedScreenPairs, game, interfacePath, "battlefield")
+  def __init__(self, battleshipsWindow, interfacePath, size):
+    super().__init__(battleshipsWindow, interfacePath, "battlefield")
 
     for battlefield in self.element.get_children():
       for i in range(size):

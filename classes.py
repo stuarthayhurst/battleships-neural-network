@@ -14,18 +14,25 @@ class Element:
     self.element.show_all()
 
 class Screen(Element):
-  def __init__(self, namedScreenIds, game, interfacePath, elementName):
+  def __init__(self, battleshipsWindow, interfacePath, elementName):
     super().__init__(interfacePath, elementName)
-    self.namedScreenIds = namedScreenIds
-    self.game = game
+    self.battleshipsWindow = battleshipsWindow
+    self.parentWindow = battleshipsWindow.element
+    self.namedScreenIds = battleshipsWindow.namedScreenIds
+    self.game = battleshipsWindow.game
+
+  def showError(self, errorMessage):
+    errorWindow = Gtk.MessageDialog(self.parentWindow, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, errorMessage)
+    errorWindow.run()
+    errorWindow.destroy()
 
 class Tile():
-  def __init__(self, tileId):
+  def __init__(self, parentScreen, tileId):
+    self.parentScreen = parentScreen
     self.tileId = tileId
     self.element = Gtk.Button.new_with_label("")
     self.element.connect("clicked", self.tilePressed)
 
-    print(f"Created tile {self.tileId}")
-
   def tilePressed(self, button):
     print(f"Pressed tile {self.tileId}")
+    self.parentScreen.targetTile = int(self.tileId)

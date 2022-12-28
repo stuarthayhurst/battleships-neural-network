@@ -66,7 +66,7 @@ class BattleshipsWindow(Window):
     self.game = Game()
 
   def createSetup(self, interfacePath):
-    self.screens.append(screens.Setup(self.namedScreenIds, self.game, interfacePath, self))
+    self.screens.append(screens.Setup(self, interfacePath))
     screenId = len(self.screens) - 1
     self.content.pack_start(self.screens[screenId].element, True, True, 0)
     self.screens[screenId].element.hide()
@@ -75,7 +75,7 @@ class BattleshipsWindow(Window):
     return screenId
 
   def createPlacement(self, interfacePath):
-    self.screens.append(screens.Placement(self.namedScreenIds, self.game, interfacePath))
+    self.screens.append(screens.Placement(self, interfacePath))
     screenId = len(self.screens) - 1
     self.content.pack_start(self.screens[screenId].element, True, True, 0)
     self.screens[screenId].element.hide()
@@ -84,7 +84,7 @@ class BattleshipsWindow(Window):
     return screenId
 
   def createBattlefield(self, interfacePath, size):
-    self.screens.append(screens.Battlefield(self.namedScreenIds, self.game, interfacePath, size))
+    self.screens.append(screens.Battlefield(self, interfacePath, size))
     screenId = len(self.screens) - 1
     self.content.pack_start(self.screens[screenId].element, True, True, 0)
     self.screens[screenId].element.hide()
