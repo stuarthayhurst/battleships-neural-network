@@ -32,6 +32,7 @@ class Tile():
     self.tileId = tileId
     self.element = Gtk.Button.new_with_label("")
     self.element.connect("clicked", self.tilePressed)
+    print(f"Created tile {self.tileId}")
 
   def tilePressed(self, button):
     print(f"Pressed tile {self.tileId}")

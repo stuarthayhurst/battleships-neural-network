@@ -139,6 +139,10 @@ class Placement(classes.Screen):
     self.updateActiveShipRotated()
 
   def confirmButtonPressed(self, button):
+    if self.activeShipIndex == len(self.shipLengths):
+      self.battleshipsWindow.setActiveScreen(self.namedScreenIds["battlefield"])
+      return
+
     if self.targetTile == -1:
       self.showError("You must select a tile to place the ship")
       return
@@ -194,15 +198,47 @@ class Placement(classes.Screen):
     return container
 
 class Battlefield(classes.Screen):
-  def __init__(self, battleshipsWindow, interfacePath, size):
+  def __init__(self, battleshipsWindow, interfacePath):
     super().__init__(battleshipsWindow, interfacePath, "battlefield")
 
-    for battlefield in self.element.get_children():
-      for i in range(size):
+    self.leftGrid = self.builder.get_object("battlefield-left")
+    self.rightGrid = self.builder.get_object("battlefield-right")
+
+    self.powerUpLeft = self.builder.get_object("powerup-bar-left")
+    self.powerUpRight = self.builder.get_object("powerup-bar-right")
+
+    powerUpFiles = ["assets/carpetbomb.png", "assets/airstrike.png", "assets/cross.png"]
+    powerUpCallbacks = [self.carpetbombPressed, self.airstrikePressed, self.crossPressed]
+
+    for powerUpBar in [self.powerUpLeft, self.powerUpRight]:
+      count = 0
+      powerUpBar.set_sensitive(False)
+      for powerUpButton in powerUpBar:
+        powerUpButton.connect("clicked", powerUpCallbacks[count])
+        image = Gtk.Image.new_from_file(powerUpFiles[count])
+        powerUpButton.set_image(image)
+        powerUpButton.set_sensitive(False)
+
+        count += 1
+
+    for battlefield in [self.leftGrid, self.rightGrid]:
+      for i in range(7):
         battlefield.insert_row(0)
         battlefield.insert_column(0)
 
-      for x in range(size):
-        for y in range(size):
-          tile = classes.Tile(str((x * size) + y))
+      for x in range(7):
+        for y in range(7):
+          tile = classes.Tile(self, str((x * 7) + y))
           battlefield.attach(tile.element, x, y, 1, 1)
+
+  def carpetbombPressed(self, button):
+    print("Carpet bomb pressed")
+    pass
+
+  def airstrikePressed(self, button):
+    print("Air strike pressed")
+    pass
+
+  def crossPressed(self, button):
+    print("Cross pressed")
+    pass

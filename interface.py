@@ -83,8 +83,8 @@ class BattleshipsWindow(Window):
     self.namedScreenIds["placement"] = screenId
     return screenId
 
-  def createBattlefield(self, interfacePath, size):
-    self.screens.append(screens.Battlefield(self, interfacePath, size))
+  def createBattlefield(self, interfacePath):
+    self.screens.append(screens.Battlefield(self, interfacePath))
     screenId = len(self.screens) - 1
     self.content.pack_start(self.screens[screenId].element, True, True, 0)
     self.screens[screenId].element.hide()
