@@ -129,6 +129,9 @@ class Placement(classes.Screen):
       self.shipRotateIcons[i].hide()
 
   def updateActiveShipRotated(self):
+    if self.activeShipIndex == len(self.shipLengths):
+      return
+
     if self.isActiveShipRotated:
       self.shipRotateIcons[self.activeShipIndex].show()
     else:
