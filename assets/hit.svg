@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 8.4666708 8.4666615"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hit.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="false"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="7.6683925"
+     inkscape:cx="11.801691"
+     inkscape:cy="23.603382"
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3127"
+       transform="matrix(0.27698272,0.27698272,-0.27698272,0.27698272,-14.087965,-37.539203)"
+       style="fill:#ff0000;fill-opacity:1">
+      <rect
+         style="fill:#ff0000;fill-opacity:1;stroke-width:0.150881;stroke-linejoin:round;paint-order:stroke markers fill"
+         id="rect3121"
+         width="26.458345"
+         height="5.2916694"
+         x="-55.562386"
+         y="105.83338"
+         ry="2.6458347"
+         transform="rotate(-90)" />
+      <rect
+         style="fill:#ff0000;fill-opacity:1;stroke-width:0.150881;stroke-linejoin:round;paint-order:stroke markers fill"
+         id="rect3123"
+         width="26.458345"
+         height="5.2916694"
+         x="-121.70839"
+         y="-44.979046"
+         ry="2.6458347"
+         transform="scale(-1)" />
+    </g>
+  </g>
+</svg>
