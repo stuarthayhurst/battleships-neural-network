@@ -13,7 +13,6 @@ placementId = window.createPlacement("ui/placement.ui")
 battlefieldId = window.createBattlefield("ui/battlefields.ui")
 
 window.setActiveScreen(setupId)
-#window.setActiveScreen(battlefieldId)
 
 #Show the window and start the mainloop
 window.element.connect("destroy", Gtk.main_quit)

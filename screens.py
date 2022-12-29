@@ -143,6 +143,7 @@ class Placement(classes.Screen):
 
   def confirmButtonPressed(self, button):
     if self.activeShipIndex == len(self.shipLengths):
+      self.game.grids.append(self.grid)
       self.battleshipsWindow.setActiveScreen(self.namedScreenIds["battlefield"])
       return
 
@@ -207,6 +208,11 @@ class Battlefield(classes.Screen):
     self.leftGrid = self.builder.get_object("battlefield-left")
     self.rightGrid = self.builder.get_object("battlefield-right")
 
+    self.hitCount = {
+      "left": 0,
+      "right": 0
+    }
+
     self.powerUpLeft = self.builder.get_object("powerup-bar-left")
     self.powerUpRight = self.builder.get_object("powerup-bar-right")
 
@@ -231,8 +237,55 @@ class Battlefield(classes.Screen):
 
       for x in range(7):
         for y in range(7):
-          tile = classes.Tile(self, str((x * 7) + y))
+          tile = classes.GameTile(self, str((x * 7) + y))
           battlefield.attach(tile.element, x, y, 1, 1)
+
+  def playerMove(self, tileId):
+    position = [tileId // 7, tileId % 7]
+    self.game.playerMove(position)
+
+  def increaseHitCounter(self, side):
+    self.hitCount[side] += 1
+    self.builder.get_object(f"hit-counter-{side}").set_label(f"Hits: {self.hitCount[side]}")
+
+  def setMarker(self, position, gridName, assetName):
+    targetGrid = None
+    if gridName == "left":
+      targetGrid = self.leftGrid
+    else:
+      targetGrid = self.rightGrid
+
+    targetGrid.get_child_at(position[0], position[1]).destroy()
+    image = Gtk.Image.new_from_file(f"assets/{assetName}.png")
+    image.show()
+    targetGrid.attach(image, position[0], position[1], 1, 1)
+
+  def setLeftBoardInactive(self):
+    self.leftGrid.set_sensitive(False)
+    self.rightGrid.set_sensitive(True)
+
+  def setRightBoardInactive(self):
+    self.rightGrid.set_sensitive(False)
+    self.leftGrid.set_sensitive(True)
+
+  def placeUserShips(self):
+    rowCount = 0
+    for row in self.game.grids[0]:
+      colCount = 0
+      for col in row:
+        if col == 1:
+          self.leftGrid.get_child_at(colCount, rowCount).destroy()
+          image = Gtk.Image.new_from_file("assets/placed.png")
+          image.show()
+          self.leftGrid.attach(image, colCount, rowCount, 1, 1)
+
+        colCount += 1
+      rowCount += 1
+
+  def show(self):
+    self.placeUserShips()
+    self.element.show_all()
+    self.game.start()
 
   def carpetbombPressed(self, button):
     print("Carpet bomb pressed")

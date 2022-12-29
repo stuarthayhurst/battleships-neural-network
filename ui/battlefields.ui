@@ -21,7 +21,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="margin-start">5</property>
-                <property name="label" translatable="yes">Hits:</property>
+                <property name="label" translatable="yes">Hits: 0</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -175,7 +175,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="margin-start">5</property>
-                <property name="label" translatable="yes">Hits:</property>
+                <property name="label" translatable="yes">Hits: 0</property>
               </object>
               <packing>
                 <property name="expand">False</property>

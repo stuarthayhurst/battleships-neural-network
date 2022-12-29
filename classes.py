@@ -29,9 +29,19 @@ class Screen(Element):
 class Tile():
   def __init__(self, parentScreen, tileId):
     self.parentScreen = parentScreen
-    self.tileId = tileId
+    self.tileId = int(tileId)
     self.element = Gtk.Button.new_with_label("")
     self.element.connect("clicked", self.tilePressed)
 
   def tilePressed(self, button):
-    self.parentScreen.targetTile = int(self.tileId)
+    self.parentScreen.targetTile = self.tileId
+
+class GameTile():
+  def __init__(self, parentScreen, tileId):
+    self.parentScreen = parentScreen
+    self.tileId = int(tileId)
+    self.element = Gtk.Button.new_with_label("")
+    self.element.connect("clicked", self.tilePressed)
+
+  def tilePressed(self, button):
+    self.parentScreen.playerMove(self.tileId)
