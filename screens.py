@@ -108,7 +108,8 @@ class Placement(classes.Screen):
     self.ships = [self.builder.get_object(f"ship-{i + 1}") for i in range(5)]
     self.shipRotateIcons = []
 
-    self.shipLengths = [5, 4, 3, 3, 2]
+  def placeRemainingShips(self, shipLengths):
+    self.shipLengths = shipLengths
     for i in range(len(self.ships)):
       self.ships[i].add(self.createShipElement(self.shipLengths[i]))
       #Reuse image from rotate button
@@ -116,6 +117,13 @@ class Placement(classes.Screen):
       self.ships[i].add(self.shipRotateIcons[i])
 
   def show(self):
+    #Show the correct number of ships to be placed, depending on the game mode
+    shipLengths = [5, 4, 3, 3, 2]
+    if self.game.gameSettings["gamemode"] == "single-ship":
+      shipLengths = [3, 3, 3, 3, 3]
+    self.placeRemainingShips(shipLengths)
+
+    #Show relevant elements
     self.element.show_all()
     for i in range(len(self.shipRotateIcons)):
       self.shipRotateIcons[i].hide()
@@ -168,20 +176,7 @@ class Placement(classes.Screen):
     self.shipRotateIcons[self.activeShipIndex].hide()
 
     #Write the active ship to the board
-    if self.isActiveShipRotated:
-      for i in range(shipLength):
-        self.grid[targetRow + i][targetCol] = 1
-        self.userBoard.get_child_at(targetCol, targetRow + i).destroy()
-        image = Gtk.Image.new_from_file("assets/placed.png")
-        image.show()
-        self.userBoard.attach(image, targetCol, targetRow + i, 1, 1)
-    else:
-      for i in range(shipLength):
-        self.grid[targetRow][targetCol + i] = 1
-        self.userBoard.get_child_at(targetCol + i, targetRow).destroy()
-        image = Gtk.Image.new_from_file("assets/placed.png")
-        image.show()
-        self.userBoard.attach(image, targetCol + i, targetRow, 1, 1)
+    self.game.placeShip(self.grid, shipLength, self.isActiveShipRotated, [targetCol, targetRow], self.userBoard)
 
     #Select the next ship
     self.activeShipIndex += 1

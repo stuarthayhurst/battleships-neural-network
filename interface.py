@@ -108,3 +108,26 @@ class Game:
       "difficulty": "",
       "gamemode": ""
     }
+
+  def placeShip(self, grid, shipLength, isRotated, position, gtkGrid = False):
+    #Parse the position
+    targetCol = position[0]
+    targetRow = position[1]
+
+    #Write the ship to the board
+    if isRotated:
+      for i in range(shipLength):
+        grid[targetRow + i][targetCol] = 1
+        if gtkGrid != False:
+          gtkGrid.get_child_at(targetCol, targetRow + i).destroy()
+          image = Gtk.Image.new_from_file("assets/placed.png")
+          image.show()
+          gtkGrid.attach(image, targetCol, targetRow + i, 1, 1)
+    else:
+      for i in range(shipLength):
+        grid[targetRow][targetCol + i] = 1
+        if gtkGrid != False:
+          gtkGrid.get_child_at(targetCol + i, targetRow).destroy()
+          image = Gtk.Image.new_from_file("assets/placed.png")
+          image.show()
+          gtkGrid.attach(image, targetCol + i, targetRow, 1, 1)
