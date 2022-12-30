@@ -1,0 +1,4 @@
+[submodule "neural-network-playground"]
+	path = neural_network_playground
+	url = git@github.com:stuarthayhurst/neural-network-playground.git
+	branch = experimental-small
