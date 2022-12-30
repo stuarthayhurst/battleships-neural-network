@@ -1,6 +1,12 @@
 #!/usr/bin/python3
-import structures
 import numpy, random
+
+class Graph:
+  def __init__(self, layerCount, nodesPerLayer, connectionsPerNode):
+    #Create a set of connections for each nodes for each layer
+    # - [layer][target node][source node]
+    self.weights = [[[0 for i in range(nodesPerLayer)] for j in range(connectionsPerNode)] for k in range(layerCount)]
+    self.biases = [0 for i in range(layerCount)]
 
 class Network():
   def __init__(self, inputSize):
@@ -10,7 +16,7 @@ class Network():
     self.dataset = []
 
     #Create input layer weights
-    self.inputLayer = structures.Graph(1, self.interfaceSize, self.interfaceSize)
+    self.inputLayer = Graph(1, self.interfaceSize, self.interfaceSize)
 
   def loadWeights(self, weights):
     weightIndex = 0
