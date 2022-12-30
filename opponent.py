@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import random
+import neural_network_playground.model as model
 
 class Opponent():
   def __init__(self):
@@ -9,6 +10,16 @@ class Opponent():
 
     self.lastGuess = []
 
+    weightFile = "weights.dmp"
+    with open(weightFile) as file:
+      weights = file.readlines()
+
+    for i in range(len(weights)):
+      weights[i] = float(weights[i].strip("\n"))
+
+    self.network = model.Network(7 ** 2)
+    self.network.loadWeights(weights)
+
   def feedbackMove(self, result):
     if result == "hit":
       self.enemyGrid[self.lastGuess[1]][self.lastGuess[0]] = 1
@@ -16,14 +27,25 @@ class Opponent():
       self.enemyGrid[self.lastGuess[1]][self.lastGuess[0]] = -1
 
   def makeMove(self):
-    guessing = True
-    x, y = 0, 0
-    while guessing:
-      x = random.randint(0, 6)
-      y = random.randint(0, 6)
+    convertedGrid = []
+    for i in range(7):
+      convertedGrid += self.enemyGrid[i]
+    guesses = self.network.sampleData(convertedGrid)
 
-      if self.enemyGrid[y][x] == 0:
-        guessing = False
+    maxGuess = 0
+    maxGuessIndex = -1
+    for i in range(len(guesses)):
+      if guesses[i] >= maxGuess:
+        if convertedGrid[i] == 0:
+          maxGuess = guesses[i]
+          maxGuessIndex = i
+    guess = maxGuessIndex
+
+    #x and y flipped compared to other sections of code
+    #This is because the neural network returns data in order horizontally, then vertically
+    #Other sections of code enumerate the grid vertically then horizontally
+    x = guess % 7
+    y = guess // 7
 
     self.lastGuess = [x, y]
     return [x, y]
