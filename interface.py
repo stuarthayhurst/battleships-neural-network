@@ -127,7 +127,7 @@ class Game:
       self.opponent.generateGrid(shipLengths)
       self.grids.append(self.opponent.grid)
 
-    self.battlefield.setLeftBoardInactive()
+    self.battlefield.setBoardInactive(0)
 
   def playerMove(self, position):
     #Check where that lands and update marker
@@ -145,7 +145,7 @@ class Game:
       print("Player has won")
 
     #Next turn (computer)
-    self.battlefield.setRightBoardInactive()
+    self.battlefield.setBoardInactive(1)
     guess = self.opponent.makeMove()
 
     #Check where that lands and update marker
@@ -164,7 +164,7 @@ class Game:
       print("Computer has won")
 
     #Prepare for next player turn
-    self.battlefield.setLeftBoardInactive()
+    self.battlefield.setBoardInactive(0)
 
   def checkWinner(self, grid):
     for row in grid:

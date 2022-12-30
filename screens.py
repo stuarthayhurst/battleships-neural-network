@@ -260,13 +260,13 @@ class Battlefield(classes.Screen):
     image.show()
     targetGrid.attach(image, position[0], position[1], 1, 1)
 
-  def setLeftBoardInactive(self):
-    self.leftGrid.set_sensitive(False)
-    self.rightGrid.set_sensitive(True)
-
-  def setRightBoardInactive(self):
-    self.rightGrid.set_sensitive(False)
-    self.leftGrid.set_sensitive(True)
+  def setBoardInactive(self, boardNum):
+    if boardNum == 0:
+      self.leftGrid.set_sensitive(False)
+      self.rightGrid.set_sensitive(True)
+    else:
+      self.rightGrid.set_sensitive(False)
+      self.leftGrid.set_sensitive(True)
 
   def placeUserShips(self):
     rowCount = 0
