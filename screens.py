@@ -274,11 +274,7 @@ class Battlefield(classes.Screen):
       colCount = 0
       for col in row:
         if col == 1:
-          self.leftGrid.get_child_at(colCount, rowCount).destroy()
-          image = Gtk.Image.new_from_file("assets/placed.png")
-          image.show()
-          self.leftGrid.attach(image, colCount, rowCount, 1, 1)
-
+          self.setMarker([colCount, rowCount], "left", "placed")
         colCount += 1
       rowCount += 1
 
