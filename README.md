@@ -11,5 +11,5 @@
   - `GTK 3` (Python 3 bindings)
 
 ## Setup:
-  - `git clone https://github.com/stuarthayhurst/neural-network-playground.git`
-  - `mv neural-network-playground neural_network`
+  - `git submodule init`
+  - `git submodule update --remote`
