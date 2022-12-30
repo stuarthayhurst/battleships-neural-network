@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import interface
+import opponent
 
 def isDone(grid):
   for row in grid:
@@ -10,7 +10,7 @@ def isDone(grid):
   return True
 
 #Setup the opponent
-opponent = interface.Opponent()
+opponent = opponent.Opponent()
 opponent.generateGrid([5, 4, 3, 3, 2])
 
 #Generate full grid

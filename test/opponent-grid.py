@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
-import interface
+import opponent
 
 shipLengths = [3, 3, 3, 3, 3]
-opponent = interface.Opponent()
+opponent = opponent.Opponent()
 opponent.generateGrid(shipLengths)
 
 for row in opponent.grid:
