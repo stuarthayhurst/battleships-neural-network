@@ -63,7 +63,7 @@ class Setup(classes.Screen):
       self.game.gameSettings["difficulty"] = translateDifficulty[difficulty]
     self.game.gameSettings["gamemode"] = translateGamemode[gamemode]
 
-    self.battleshipsWindow.setActiveScreen(self.namedScreenIds["placement"])
+    self.battleshipsWindow.setActiveScreen(self.namedScreenIds["placement-0"])
 
     print("Game settings:")
     print(f" - Opponent: {opponent}")
@@ -77,11 +77,13 @@ class Setup(classes.Screen):
       self.difficultyArea.set_sensitive(True)
 
 class Placement(classes.Screen):
-  def __init__(self, battleshipsWindow, interfacePath):
+  def __init__(self, battleshipsWindow, interfacePath, playerId):
     super().__init__(battleshipsWindow, interfacePath, "placement")
     self.isActiveShipRotated = False
     self.activeShipIndex = 0
     self.targetTile = -1
+    self.playerId = playerId
+    self.interfacePath = interfacePath
 
     #Accessed by [row][column]
     self.grid = [[0 for i in range(7)] for j in range(7)]
@@ -144,7 +146,11 @@ class Placement(classes.Screen):
   def confirmButtonPressed(self, button):
     if self.activeShipIndex == len(self.shipLengths):
       self.game.grids.append(self.grid)
-      self.battleshipsWindow.setActiveScreen(self.namedScreenIds["battlefield"])
+      if self.game.gameSettings["opponent"] == "multiplayer" and self.playerId == 0:
+        newPlacementId = self.battleshipsWindow.createPlacement(self.interfacePath, 1)
+        self.battleshipsWindow.setActiveScreen(newPlacementId)
+      else:
+        self.battleshipsWindow.setActiveScreen(self.namedScreenIds["battlefield"])
       return
 
     if self.targetTile == -1:
@@ -216,6 +222,8 @@ class Battlefield(classes.Screen):
     self.powerUpLeft = self.builder.get_object("powerup-bar-left")
     self.powerUpRight = self.builder.get_object("powerup-bar-right")
 
+    self.rightPlayerLabel = self.builder.get_object("name-label-right") 
+
     powerUpFiles = ["assets/carpetbomb.png", "assets/airstrike.png", "assets/cross.png"]
     powerUpCallbacks = [self.carpetbombPressed, self.airstrikePressed, self.crossPressed]
 
@@ -279,7 +287,8 @@ class Battlefield(classes.Screen):
       rowCount += 1
 
   def show(self):
-    self.placeUserShips()
+    if self.game.gameSettings["opponent"] == "computer":
+      self.placeUserShips()
     self.element.show_all()
     self.game.start()
 

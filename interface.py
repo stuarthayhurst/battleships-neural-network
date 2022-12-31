@@ -75,13 +75,13 @@ class BattleshipsWindow(Window):
     self.namedScreenIds["setup"] = screenId
     return screenId
 
-  def createPlacement(self, interfacePath):
-    self.screens.append(screens.Placement(self, interfacePath))
+  def createPlacement(self, interfacePath, playerId):
+    self.screens.append(screens.Placement(self, interfacePath, playerId))
     screenId = len(self.screens) - 1
     self.content.pack_start(self.screens[screenId].element, True, True, 0)
     self.screens[screenId].element.hide()
 
-    self.namedScreenIds["placement"] = screenId
+    self.namedScreenIds[f"placement-{playerId}"] = screenId
     return screenId
 
   def createBattlefield(self, interfacePath):
@@ -115,6 +115,7 @@ class Game:
     self.battlefield = None
 
     self.opponent = opponent.Opponent()
+    self.playerTurn = 0
 
   def start(self):
     battlefieldId = self.battleshipsWindow.namedScreenIds["battlefield"]
@@ -127,9 +128,11 @@ class Game:
       self.opponent.generateGrid(shipLengths)
       self.grids.append(self.opponent.grid)
 
+      self.battlefield.rightPlayerLabel.set_label("Computer")
+
     self.battlefield.setBoardInactive(0)
 
-  def playerMove(self, position):
+  def leftPlayerMove(self, position):
     #Check where that lands and update marker
     if self.grids[1][position[1]][position[0]] == 1: #Hit
       self.battlefield.setMarker(position, "right", "hit")
@@ -140,12 +143,19 @@ class Game:
     else: #Miss
       self.battlefield.setMarker(position, "right", "miss")
 
-    #Check for a winner
-    if self.checkWinner(self.grids[1]):
-      print("Player has won")
+  def rightPlayerMove(self, position):
+    #Check where that lands and update marker
+    if self.grids[0][position[1]][position[0]] == 1: #Hit
+      self.battlefield.setMarker(position, "left", "hit")
 
+      #Increase hit counter and write to the board
+      self.battlefield.increaseHitCounter("left")
+      self.grids[0][position[1]][position[0]] = 0
+    else: #Miss
+      self.battlefield.setMarker(position, "left", "miss")
+
+  def opponentMove(self):
     #Next turn (computer)
-    self.battlefield.setBoardInactive(1)
     guess = self.opponent.makeMove()
 
     #Check where that lands and update marker
@@ -160,11 +170,32 @@ class Game:
       self.battlefield.setMarker(guess, "left", "miss")
       self.opponent.feedbackMove("miss")
 
-    if self.checkWinner(self.grids[0]):
-      print("Computer has won")
+  def playerMove(self, position):
+    if self.playerTurn == 0:
+      self.leftPlayerMove(position)
 
-    #Prepare for next player turn
-    self.battlefield.setBoardInactive(0)
+      #Check if the player won
+      if self.checkWinner(self.grids[1]):
+        print("Left player has won")
+
+      if self.gameSettings["opponent"] == "computer":
+        self.opponentMove()
+        self.battlefield.setBoardInactive(0)
+      else:
+        #Prepare board for right player
+        self.playerTurn = 1
+        self.battlefield.setBoardInactive(1)
+
+    else:
+      self.rightPlayerMove(position)
+
+      #Prepare board for left player
+      self.playerTurn = 0
+      self.battlefield.setBoardInactive(0)
+
+    #Check if the opponent / right player won
+    if self.checkWinner(self.grids[0]):
+      print("Right player has won")
 
   def checkWinner(self, grid):
     for row in grid:
