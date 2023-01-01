@@ -11,6 +11,7 @@ window = interface.BattleshipsWindow("ui/main-window.ui", "Battleships")
 setupId = window.createSetup("ui/setup.ui")
 placementId = window.createPlacement("ui/placement.ui", 0)
 battlefieldId = window.createBattlefield("ui/battlefields.ui")
+gameEndId = window.createGameEnd("ui/gameend.ui")
 
 window.setActiveScreen(setupId)
 

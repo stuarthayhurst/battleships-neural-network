@@ -21,10 +21,10 @@ class Screen(Element):
     self.namedScreenIds = battleshipsWindow.namedScreenIds
     self.game = battleshipsWindow.game
 
-  def showError(self, errorMessage):
-    errorWindow = Gtk.MessageDialog(self.parentWindow, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, errorMessage)
-    errorWindow.run()
-    errorWindow.destroy()
+  def showMessage(self, message):
+    messageWindow = Gtk.MessageDialog(self.parentWindow, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, message)
+    messageWindow.run()
+    messageWindow.destroy()
 
 class Tile():
   def __init__(self, parentScreen, tileId):

@@ -93,6 +93,15 @@ class BattleshipsWindow(Window):
     self.namedScreenIds["battlefield"] = screenId
     return screenId
 
+  def createGameEnd(self, interfacePath):
+    self.screens.append(screens.GameEnd(self, interfacePath))
+    screenId = len(self.screens) - 1
+    self.content.pack_start(self.screens[screenId].element, True, True, 0)
+    self.screens[screenId].element.hide()
+
+    self.namedScreenIds["game-end"] = screenId
+    return screenId
+
   def setActiveScreen(self, screenId):
     if (self.activeScreenId != None):
       self.screens[self.activeScreenId].element.hide()
@@ -177,10 +186,16 @@ class Game:
       #Check if the player won
       if self.checkWinner(self.grids[1]):
         print("Left player has won")
+        self.handleWinner("Player 1")
 
       if self.gameSettings["opponent"] == "computer":
         self.opponentMove()
         self.battlefield.setBoardInactive(0)
+
+        #Check if the computer won
+        if self.checkWinner(self.grids[0]):
+          print("Computer has won")
+          self.handleWinner("Computer")
       else:
         #Prepare board for right player
         self.playerTurn = 1
@@ -193,9 +208,14 @@ class Game:
       self.playerTurn = 0
       self.battlefield.setBoardInactive(0)
 
-    #Check if the opponent / right player won
-    if self.checkWinner(self.grids[0]):
-      print("Right player has won")
+      #Check if the right player won
+      if self.checkWinner(self.grids[0]):
+        print("Right player has won")
+        self.handleWinner("Player 2")
+
+  def handleWinner(self, winner):
+    self.battlefield.showMessage(f"{winner} has won!")
+    self.battleshipsWindow.setActiveScreen(self.battleshipsWindow.namedScreenIds["game-end"])
 
   def checkWinner(self, grid):
     for row in grid:

@@ -32,12 +32,12 @@ class Setup(classes.Screen):
 
     #Display an error if playing against the computer with no difficulty selected
     if (difficulty == -1) and (opponent == "computer"):
-      self.showError("You must select a difficulty")
+      self.showMessage("You must select a difficulty")
       failed = True
 
     #Display an error if no game mode was selected
     if (gamemode == -1):
-      self.showError("You must select a game mode")
+      self.showMessage("You must select a game mode")
       failed = True
 
     if failed:
@@ -154,7 +154,7 @@ class Placement(classes.Screen):
       return
 
     if self.targetTile == -1:
-      self.showError("You must select a tile to place the ship")
+      self.showMessage("You must select a tile to place the ship")
       return
 
     shipLength = self.shipLengths[self.activeShipIndex]
@@ -166,23 +166,23 @@ class Placement(classes.Screen):
     #Check ship fits within the board
     if self.isActiveShipRotated:
       if targetRow + (shipLength) > 7:
-        self.showError("Invalid location, ship won't fit on the board")
+        self.showMessage("Invalid location, ship won't fit on the board")
         return
     else:
       if targetCol + (shipLength) > 7:
-        self.showError("Invalid location, ship won't fit on the board")
+        self.showMessage("Invalid location, ship won't fit on the board")
         return
 
     #Check the ship doesn't collide with an existing ship
     if self.isActiveShipRotated:
       for i in range(shipLength):
         if self.grid[targetRow + i][targetCol] == 1:
-          self.showError("Invalid location, ship would collide with another ship")
+          self.showMessage("Invalid location, ship would collide with another ship")
           return
     else:
       for i in range(shipLength):
         if self.grid[targetRow][targetCol + i] == 1:
-          self.showError("Invalid location, ship would collide with another ship")
+          self.showMessage("Invalid location, ship would collide with another ship")
           return
 
     #Hide the currently active ship and rotate symbol from the menu
@@ -303,3 +303,16 @@ class Battlefield(classes.Screen):
   def crossPressed(self, button):
     print("Cross pressed")
     pass
+
+class GameEnd(classes.Screen):
+  def __init__(self, battleshipsWindow, interfacePath):
+    super().__init__(battleshipsWindow, interfacePath, "game-end")
+
+    self.builder.get_object("quit-button").connect("clicked", self.quitButtonPressed)
+    self.builder.get_object("restart-button").connect("clicked", self.restartButtonPressed)
+
+  def quitButtonPressed(self, button):
+    print("Quit pressed")
+
+  def restartButtonPressed(self, button):
+    print("Play again pressed")
