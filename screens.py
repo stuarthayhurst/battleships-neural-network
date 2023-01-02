@@ -308,11 +308,16 @@ class GameEnd(classes.Screen):
   def __init__(self, battleshipsWindow, interfacePath):
     super().__init__(battleshipsWindow, interfacePath, "game-end")
 
+    self.winnerLabel = self.builder.get_object("winner-label")
+
     self.builder.get_object("quit-button").connect("clicked", self.quitButtonPressed)
     self.builder.get_object("restart-button").connect("clicked", self.restartButtonPressed)
 
+  def setWinner(self, winner):
+    self.winnerLabel.set_label(f"{winner} has won!")
+
   def quitButtonPressed(self, button):
-    print("Quit pressed")
+    Gtk.main_quit()
 
   def restartButtonPressed(self, button):
     print("Play again pressed")

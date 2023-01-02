@@ -185,7 +185,6 @@ class Game:
 
       #Check if the player won
       if self.checkWinner(self.grids[1]):
-        print("Left player has won")
         self.handleWinner("Player 1")
 
       if self.gameSettings["opponent"] == "computer":
@@ -194,7 +193,6 @@ class Game:
 
         #Check if the computer won
         if self.checkWinner(self.grids[0]):
-          print("Computer has won")
           self.handleWinner("Computer")
       else:
         #Prepare board for right player
@@ -210,12 +208,13 @@ class Game:
 
       #Check if the right player won
       if self.checkWinner(self.grids[0]):
-        print("Right player has won")
         self.handleWinner("Player 2")
 
   def handleWinner(self, winner):
+    print(f"{winner} has won!")
     self.battlefield.showMessage(f"{winner} has won!")
     self.battleshipsWindow.setActiveScreen(self.battleshipsWindow.namedScreenIds["game-end"])
+    self.battleshipsWindow.screens[self.battleshipsWindow.namedScreenIds["game-end"]].setWinner(winner)
 
   def checkWinner(self, grid):
     for row in grid:
