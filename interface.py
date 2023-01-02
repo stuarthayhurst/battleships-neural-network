@@ -108,6 +108,28 @@ class BattleshipsWindow(Window):
     self.screens[screenId].show()
     self.activeScreenId = screenId
 
+  def reset(self):
+    #Reset game, settings and opponent
+    self.game.opponent = opponent.Opponent()
+    for setting in self.game.gameSettings.keys():
+      self.game.gameSettings[setting] = ""
+    self.game.grids = []
+    self.playerTurn = 0
+
+    #Delete second player placement, if present
+    if "placement-1" in self.namedScreenIds.keys():
+      self.screens[self.namedScreenIds["placement-1"]] = None
+      self.namedScreenIds.pop("placement-1")
+
+    #Reset modified screens
+    self.screens[self.namedScreenIds["placement-0"]] = None
+    self.createPlacement("ui/placement.ui", 0)
+    self.screens[self.namedScreenIds["battlefield"]] = None
+    self.createBattlefield("ui/battlefields.ui")
+
+    #Return to start screen
+    self.setActiveScreen(self.namedScreenIds["setup"])
+
   def show(self):
     self.element.show()
 

@@ -320,4 +320,5 @@ class GameEnd(classes.Screen):
     Gtk.main_quit()
 
   def restartButtonPressed(self, button):
-    print("Play again pressed")
+    #Trigger reset on the program
+    self.battleshipsWindow.reset()
