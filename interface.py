@@ -164,6 +164,8 @@ class Game:
       self.grids.append(self.opponent.grid)
 
       self.battlefield.rightPlayerLabel.set_label("Computer")
+    else:
+      self.battlefield.rightPlayerLabel.set_label("Guest")
 
     self.battlefield.setBoardInactive(0)
 
@@ -236,7 +238,7 @@ class Game:
 
       #Check if the right player won
       if self.checkWinner(self.grids[0]):
-        self.handleWinner("Player 2")
+        self.handleWinner("Guest")
 
   def handleWinner(self, winner):
     print(f"{winner} has won!")
