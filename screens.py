@@ -309,12 +309,17 @@ class GameEnd(classes.Screen):
     super().__init__(battleshipsWindow, interfacePath, "game-end")
 
     self.winnerLabel = self.builder.get_object("winner-label")
+    self.statisticsLabel = self.builder.get_object("statistics-label")
 
     self.builder.get_object("quit-button").connect("clicked", self.quitButtonPressed)
     self.builder.get_object("restart-button").connect("clicked", self.restartButtonPressed)
 
   def setWinner(self, winner):
     self.winnerLabel.set_label(f"{winner} has won!")
+
+  def setStatistics(self, guessCount, hitCount):
+    ratio = hitCount / (guessCount - hitCount)
+    self.statisticsLabel.set_label(f"Guesses made: {guessCount}\nHits made: {hitCount}\nHit / miss ratio {round(ratio, 2)}")
 
   def quitButtonPressed(self, button):
     Gtk.main_quit()

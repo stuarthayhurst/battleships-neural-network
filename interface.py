@@ -115,6 +115,8 @@ class BattleshipsWindow(Window):
       self.game.gameSettings[setting] = ""
     self.game.grids = []
     self.playerTurn = 0
+    self.totalMoves = 0
+    self.hitsMade = 0
 
     #Delete second player placement, if present
     if "placement-1" in self.namedScreenIds.keys():
@@ -147,6 +149,8 @@ class Game:
 
     self.opponent = opponent.Opponent()
     self.playerTurn = 0
+    self.totalMoves = 0
+    self.hitsMade = 0
 
   def start(self):
     battlefieldId = self.battleshipsWindow.namedScreenIds["battlefield"]
@@ -170,6 +174,7 @@ class Game:
 
       #Increase hit counter and write to the board
       self.battlefield.increaseHitCounter("right")
+      self.hitsMade += 1
       self.grids[1][position[1]][position[0]] = 0
     else: #Miss
       self.battlefield.setMarker(position, "right", "miss")
@@ -204,6 +209,7 @@ class Game:
   def playerMove(self, position):
     if self.playerTurn == 0:
       self.leftPlayerMove(position)
+      self.totalMoves += 1
 
       #Check if the player won
       if self.checkWinner(self.grids[1]):
@@ -235,8 +241,13 @@ class Game:
   def handleWinner(self, winner):
     print(f"{winner} has won!")
     self.battlefield.showMessage(f"{winner} has won!")
-    self.battleshipsWindow.setActiveScreen(self.battleshipsWindow.namedScreenIds["game-end"])
-    self.battleshipsWindow.screens[self.battleshipsWindow.namedScreenIds["game-end"]].setWinner(winner)
+
+    gameEndScreenId = self.battleshipsWindow.namedScreenIds["game-end"]
+    gameEndScreen = self.battleshipsWindow.screens[gameEndScreenId]
+
+    self.battleshipsWindow.setActiveScreen(gameEndScreenId)
+    gameEndScreen.setWinner(winner)
+    gameEndScreen.setStatistics(self.totalMoves, self.hitsMade)
 
   def checkWinner(self, grid):
     for row in grid:
