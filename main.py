@@ -49,7 +49,7 @@ startTime = getSeconds()
 
 #Define dataset parameters and generate data
 datasetSize, boardDimensions = 1000, 7
-maxHits = (boardDimensions ** 2) - boardDimensions
+maxHits = (boardDimensions ** 2)
 generatedData = dataset.buildDataset(datasetSize, boardDimensions, maxHits)
 
 print(f"Generated dataset in {round(getSeconds() - startTime, 4)}s")
