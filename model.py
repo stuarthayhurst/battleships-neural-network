@@ -51,9 +51,7 @@ class Network():
     workingValues.append([])
     preActivationValues.append([])
     for targetNode in self.inputLayer.weights[0]:
-      #result = numpy.dot(inputData, targetNode)
       workingValues[0].append(numpy.dot(inputData, targetNode))
-      #workingValues[0].append(result + self.inputLayer.biases[0])
 
     #Apply activation function to input layer
     for i in range(self.interfaceSize):
@@ -103,27 +101,47 @@ class Network():
       print(f"Error    : {meanCosts}\n")
       print(f"Total    : {averageCost}\n")
 
+    tempWeights = []
+    for targetNode in range(self.interfaceSize):
+      tempWeights.append([])
+      for previousNode in range(self.interfaceSize):
+        tempWeights[targetNode].append(0)
+
     for targetNode in range(self.interfaceSize):
       result = results[targetNode]
       offset = result - dataPair[1][targetNode]
       dEP = 2 * (offset)
       dPL = self.sigmoidDerivative(preActivationValues[0][targetNode])
-      #dEB = dEP * dPL
       for previousNode in range(self.interfaceSize):
         dLW = dataPair[0][previousNode]
         dEL = dEP * dPL * dLW
-        self.inputLayer.weights[0][targetNode][previousNode] -= dEL * learningRate
-        #self.inputLayer.biases[0] -= dEB * learningRate
+        tempWeights[targetNode][previousNode] += dEL * learningRate
 
-  def trainNetwork(self, iterations, learningRate):
+      return tempWeights
+
+  def trainNetwork(self, batchCount, batchSize, learningRate):
+    batchSize = 10
+
     dataCount = len(self.dataset)
-    for i in range(iterations):
+    for i in range(batchCount):
       verbose = False
-      if (i % 500 == 0):
+      if ((i * batchSize) % 500 < batchSize):
         verbose = True
 
-      dataPair = self.dataset[random.randint(0, dataCount - 1)]
-      self.trainDataPair(dataPair, learningRate, verbose)
+      weightChanges = []
+      for x in range(batchSize):
+        dataPair = self.dataset[random.randint(0, dataCount - 1)]
+        weightChanges.append(self.trainDataPair(dataPair, learningRate, verbose))
+
+      avg = [[0 for k in range(self.interfaceSize)] for l in range(self.interfaceSize)]
+      for weightCount in range(batchSize):
+        for targetNode in range(self.interfaceSize):
+          for previousNode in range(self.interfaceSize):
+            avg[targetNode][previousNode] += weightChanges[weightCount][targetNode][previousNode]
+
+      for targetNode in range(self.interfaceSize):
+        for previousNode in range(self.interfaceSize):
+          self.inputLayer.weights[0][targetNode][previousNode] -= avg[targetNode][previousNode] / batchSize
 
       if verbose:
-        print(f"{i} / {iterations} ({round((i / iterations) * 100, 2)}%)")
+        print(f"Batch {i} / {batchCount} ({round((i / batchCount) * 100, 2)}%)")
