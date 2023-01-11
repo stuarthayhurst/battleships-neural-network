@@ -2,6 +2,7 @@
 import random
 import model
 import dataset
+import sys
 
 def getWeights(weightFile, networkSize):
   #Attempt to load existing weights from file
@@ -20,10 +21,10 @@ def getWeights(weightFile, networkSize):
 
   #Fail if weights couldn't be used
   if not weightsValid:
-    print("Failed to load existing model")
+    print(f"Failed to load existing model ({weightFile})")
     exit(1)
   else:
-    print("Loaded existing model")
+    print(f"Loaded existing model ({weightFile})")
 
   return weights
 
@@ -32,7 +33,12 @@ inputDimensions = 7
 networkSize = (inputDimensions ** 2) ** 2
 
 #Load weights in from file, or generate default
-weightFile = "weights.dmp"
+sys.argv.append(None)
+if sys.argv[1] == None:
+  weightFile = "weights.dmp"
+else:
+  weightFile = sys.argv[1]
+  print(weightFile)
 weights = getWeights(weightFile, networkSize)
 
 #Create model and load weights
