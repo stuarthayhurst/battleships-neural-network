@@ -130,6 +130,8 @@ class Network():
       for x in range(batchSize):
         dataPair = self.dataset[random.randint(0, dataCount - 1)]
         weightChanges.append(self.trainDataPair(dataPair, learningRate, verbose))
+        if verbose:
+          verbose = False
 
       avg = [[0 for k in range(self.interfaceSize)] for l in range(self.interfaceSize)]
       for weightCount in range(batchSize):
@@ -141,5 +143,5 @@ class Network():
         for previousNode in range(self.interfaceSize):
           self.inputLayer.weights[0][targetNode][previousNode] -= avg[targetNode][previousNode] / batchSize
 
-      if verbose:
+      if ((i * batchSize) % 500 < batchSize):
         print(f"Batch {i} / {batchCount} ({round((i / batchCount) * 100, 2)}%)")
