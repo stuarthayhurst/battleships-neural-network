@@ -120,8 +120,6 @@ class Network():
       return tempWeights
 
   def trainNetwork(self, batchCount, batchSize, learningRate):
-    batchSize = 10
-
     dataCount = len(self.dataset)
     for i in range(batchCount):
       verbose = False
