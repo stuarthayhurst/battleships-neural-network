@@ -51,8 +51,9 @@ class Network():
     workingValues.append([])
     preActivationValues.append([])
     for targetNode in self.inputLayer.weights[0]:
-      result = numpy.dot(inputData, targetNode)
-      workingValues[0].append(result + self.inputLayer.biases[0])
+      #result = numpy.dot(inputData, targetNode)
+      workingValues[0].append(numpy.dot(inputData, targetNode))
+      #workingValues[0].append(result + self.inputLayer.biases[0])
 
     #Apply activation function to input layer
     for i in range(self.interfaceSize):
@@ -74,11 +75,8 @@ class Network():
         print("Data points can't be empty")
         return False
 
-    #Copy passed dataset into structure
-    for i in range(len(dataset)):
-      self.dataset.append([None, None])
-      for j in [0, 1]:
-        self.dataset[i][j] = dataset[i][j]
+    #Copy the dataset into instance
+    self.dataset = dataset
 
     return True
 
@@ -90,26 +88,20 @@ class Network():
     workingValues, preActivationValues = self.sampleData(dataPair[0], True)
     results = workingValues[len(workingValues) - 1]
 
-    #Calculate the MSE of the prediction
-    outputLength = len(dataPair[0])
-    meanCosts = []
-    averageCost = 0
-    for i in range(outputLength):
-      meanCosts.append((results[i] - dataPair[1][i]) ** 2)
-      averageCost += meanCosts[i]
-    averageCost /= outputLength
-
     if verbose:
+      #Calculate the MSE of the prediction
+      outputLength = len(dataPair[0])
+      averageCost = 0
+      meanCosts = []
+      for i in range(outputLength):
+        meanCosts.append((results[i] - dataPair[1][i]) ** 2)
+        averageCost += meanCosts[i]
+      averageCost /= outputLength
       print(f"Input    : {dataPair[0]}\n")
       print(f"Expected : {[round(float(i), 2) for i in dataPair[1]]}\n")
       print(f"Result   : {[round(float(i), 2) for i in results]}\n")
       print(f"Error    : {meanCosts}\n")
       print(f"Total    : {averageCost}\n")
-
-    debug = False
-    if debug:
-      print(f"Finals: {workingValues}")
-      print(f"Inputs: {preActivationValues}")
 
     for targetNode in range(self.interfaceSize):
       result = results[targetNode]
