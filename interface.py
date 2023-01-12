@@ -163,6 +163,9 @@ class Game:
       self.opponent.generateGrid(shipLengths)
       self.grids.append(self.opponent.grid)
 
+      #Load weights if the opponent is a computer
+      self.opponent.loadWeights(f"weights/weights-{self.gameSettings['difficulty']}.dmp")
+
       self.battlefield.rightPlayerLabel.set_label("Computer")
     else:
       self.battlefield.rightPlayerLabel.set_label("Guest")

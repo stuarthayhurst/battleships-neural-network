@@ -10,15 +10,17 @@ class Opponent():
 
     self.lastGuess = []
 
-    weightFile = "weights.dmp"
-    with open(weightFile) as file:
+    self.network = model.Network(7 ** 2)
+
+  def loadWeights(self, weightsPath):
+    with open(weightsPath) as file:
       weights = file.readlines()
 
     for i in range(len(weights)):
       weights[i] = float(weights[i].strip("\n"))
 
-    self.network = model.Network(7 ** 2)
     self.network.loadWeights(weights)
+    print(f"Loaded {weightsPath}")
 
   def feedbackMove(self, result):
     if result == "hit":
