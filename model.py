@@ -6,7 +6,6 @@ class Graph:
     #Create a set of connections for each nodes for each layer
     # - [layer][target node][source node]
     self.weights = [[[0 for i in range(nodesPerLayer)] for j in range(connectionsPerNode)] for k in range(layerCount)]
-    self.biases = [0 for i in range(layerCount)]
 
 class Network():
   def __init__(self, inputSize):
@@ -16,7 +15,7 @@ class Network():
     self.dataset = []
 
     #Create input layer weights
-    self.inputLayer = Graph(1, self.interfaceSize, self.interfaceSize)
+    self.weightGraph = Graph(1, self.interfaceSize, self.interfaceSize)
 
   def loadWeights(self, weights):
     weightIndex = 0
@@ -24,13 +23,13 @@ class Network():
     #Load weights for input layer
     for targetNode in range(self.interfaceSize):
       for nodeCount in range(self.interfaceSize):
-        self.inputLayer.weights[0][targetNode][nodeCount] = weights[weightIndex]
+        self.weightGraph.weights[0][targetNode][nodeCount] = weights[weightIndex]
         weightIndex += 1
 
   def dumpNetwork(self):
     weights = []
 
-    for targetNode in self.inputLayer.weights[0]:
+    for targetNode in self.weightGraph.weights[0]:
       for node in targetNode:
         weights.append(node)
 
@@ -50,7 +49,7 @@ class Network():
     workingValues = []
     workingValues.append([])
     preActivationValues.append([])
-    for targetNode in self.inputLayer.weights[0]:
+    for targetNode in self.weightGraph.weights[0]:
       workingValues[0].append(numpy.dot(inputData, targetNode))
 
     #Apply activation function to input layer
@@ -141,7 +140,7 @@ class Network():
 
       for targetNode in range(self.interfaceSize):
         for previousNode in range(self.interfaceSize):
-          self.inputLayer.weights[0][targetNode][previousNode] -= avg[targetNode][previousNode] / batchSize
+          self.weightGraph.weights[0][targetNode][previousNode] -= avg[targetNode][previousNode] / batchSize
 
       if ((i * batchSize) % 500 < batchSize):
         print(f"Batch {i} / {batchCount} ({round((i / batchCount) * 100, 2)}%)")
