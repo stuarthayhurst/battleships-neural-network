@@ -114,9 +114,9 @@ class BattleshipsWindow(Window):
     for setting in self.game.gameSettings.keys():
       self.game.gameSettings[setting] = ""
     self.game.grids = []
-    self.playerTurn = 0
-    self.totalMoves = 0
-    self.hitsMade = 0
+    self.game.playerTurn = 0
+    self.game.totalMoves = 0
+    self.game.hitsMade = 0
 
     #Delete second player placement, if present
     if "placement-1" in self.namedScreenIds.keys():
