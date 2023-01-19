@@ -67,9 +67,11 @@ class Window(classes.Element):
     print("Sound toggle pressed")
 
   def statsButtonPressed(self, button):
+    #Load stats in from file, and return status
     statsPath = "stats.csv"
     statsDict, foundFile = readStats(statsPath)
 
+    #Calculate statistics and create pop-up message, or handle case of no file
     windowMessage = ""
     if foundFile:
       #Check for perfect track record, to avoid potential division by zero
