@@ -4,6 +4,9 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
+import csv
+import os
+
 import opponent
 import screens
 import classes
@@ -243,9 +246,43 @@ class Game:
       if self.checkWinner(self.grids[0]):
         self.handleWinner("Guest")
 
+  def saveStatistics(self, totalMoves, hitsMade, playerWon):
+    statsPath = "stats.csv"
+
+    statsDict = {
+      "totalGames": 0,
+      "totalWins": 0,
+      "totalMoves": 0,
+      "totalHits": 0
+    }
+
+    #Read CSV into dictionary, if it exists
+    if os.path.isfile(statsPath):
+      with open(statsPath) as statsFile:
+        reader = csv.reader(statsFile, delimiter = ",")
+        for row in reader:
+          statsDict[row[0]] = int(row[1])
+
+    #Update recorded statistics with new values
+    if playerWon:
+      statsDict["totalWins"] += 1
+    statsDict["totalGames"] += 1
+    statsDict["totalMoves"] += totalMoves
+    statsDict["totalHits"] += hitsMade
+
+    #Save new statistics to file
+    with open(statsPath, "w+") as statsFile:
+      for key in statsDict.keys():
+        lineString = f"{key},{statsDict[key]}\n"
+        statsFile.write(lineString)
+
   def handleWinner(self, winner):
     print(f"{winner} has won!")
     self.battlefield.showMessage(f"{winner} has won!")
+
+    #Statistics recording
+    playerWon = True if winner == "Player 1" else False
+    self.saveStatistics(self.totalMoves, self.hitsMade, playerWon)
 
     gameEndScreenId = self.battleshipsWindow.namedScreenIds["game-end"]
     gameEndScreen = self.battleshipsWindow.screens[gameEndScreenId]
