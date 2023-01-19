@@ -11,6 +11,26 @@ import opponent
 import screens
 import classes
 
+def readStats(statsFile):
+  statsPath = "stats.csv"
+  statsDict = {
+    "totalGames": 0,
+    "totalWins": 0,
+    "totalMoves": 0,
+    "totalHits": 0
+  }
+
+  #Read CSV into dictionary, if it exists
+  if os.path.isfile(statsPath):
+    with open(statsPath) as statsFile:
+      reader = csv.reader(statsFile, delimiter = ",")
+      for row in reader:
+        statsDict[row[0]] = int(row[1])
+  else:
+    return statsDict, False
+
+  return statsDict, True
+
 #Wrapper class for GTK
 class Window(classes.Element):
   def __init__(self, uiFilePath):
@@ -47,7 +67,36 @@ class Window(classes.Element):
     print("Sound toggle pressed")
 
   def statsButtonPressed(self, button):
-    print("Statistics button pressed")
+    statsPath = "stats.csv"
+    statsDict, foundFile = readStats(statsPath)
+
+    windowMessage = ""
+    if foundFile:
+      #Check for perfect track record, to avoid potential division by zero
+      winLossRatio = ""
+      if statsDict["totalWins"] == statsDict["totalGames"]:
+        winLossRatio = "∞"
+      else:
+        winLossRatio = statsDict["totalWins"] / (statsDict["totalGames"] - statsDict["totalWins"])
+        winLossRatio = str(round(winLossRatio, 2))
+
+      #Check for hit rate, to avoid potential division by zero
+      hitMissRatio = ""
+      if statsDict["totalHits"] == statsDict["totalMoves"]:
+        hitMissRatio = "∞"
+      else:
+        hitMissRatio = statsDict["totalHits"] / (statsDict["totalMoves"] - statsDict["totalHits"])
+        hitMissRatio = str(round(hitMissRatio, 2))
+
+      movesPerGame = statsDict["totalMoves"] / statsDict["totalGames"]
+      movesPerGame = str(round(movesPerGame, 2))
+      windowMessage = f"Win / loss ratio: {winLossRatio}\nAverage moves per game {movesPerGame}\nHit / miss ratio: {hitMissRatio}"
+    else:
+      windowMessage = "No statistics to display, play a game"
+
+    #Display the message as a popup
+    #Reuse the first screen found to send the popup from
+    self.screens[self.namedScreenIds[list(self.namedScreenIds.keys())[0]]].showMessage(windowMessage)
 
   def achievementsButtonPressed(self, button):
     print("Achievements button pressed")
@@ -248,20 +297,7 @@ class Game:
 
   def saveStatistics(self, totalMoves, hitsMade, playerWon):
     statsPath = "stats.csv"
-
-    statsDict = {
-      "totalGames": 0,
-      "totalWins": 0,
-      "totalMoves": 0,
-      "totalHits": 0
-    }
-
-    #Read CSV into dictionary, if it exists
-    if os.path.isfile(statsPath):
-      with open(statsPath) as statsFile:
-        reader = csv.reader(statsFile, delimiter = ",")
-        for row in reader:
-          statsDict[row[0]] = int(row[1])
+    statsDict, foundFile = readStats(statsPath)
 
     #Update recorded statistics with new values
     if playerWon:
