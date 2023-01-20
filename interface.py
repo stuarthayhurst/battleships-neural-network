@@ -235,8 +235,11 @@ class Game:
       self.battlefield.increaseHitCounter("right")
       self.hitsMade += 1
       self.grids[1][position[1]][position[0]] = 0
+
+      return True
     else: #Miss
       self.battlefield.setMarker(position, "right", "miss")
+      return False
 
   def rightPlayerMove(self, position):
     #Check where that lands and update marker
@@ -246,8 +249,11 @@ class Game:
       #Increase hit counter and write to the board
       self.battlefield.increaseHitCounter("left")
       self.grids[0][position[1]][position[0]] = 0
+
+      return True
     else: #Miss
       self.battlefield.setMarker(position, "left", "miss")
+      return False
 
   def opponentMove(self):
     #Next turn (computer)
@@ -261,13 +267,17 @@ class Game:
       self.battlefield.increaseHitCounter("left")
       self.grids[0][guess[1]][guess[0]] = 0
       self.opponent.feedbackMove("hit")
+
+      return True
     else: #Miss
       self.battlefield.setMarker(guess, "left", "miss")
       self.opponent.feedbackMove("miss")
+      return False
 
   def playerMove(self, position):
+    wasHit = False
     if self.playerTurn == 0:
-      self.leftPlayerMove(position)
+      wasHit = self.leftPlayerMove(position)
       self.totalMoves += 1
 
       #Check if the player won
@@ -275,19 +285,24 @@ class Game:
         self.handleWinner("Player 1")
 
       if self.gameSettings["opponent"] == "computer":
-        self.opponentMove()
-        self.battlefield.setBoardInactive(0)
+        #Check for an active streak
+        if not (wasHit and self.gameSettings["gamemode"] == "streaks"):
+          hitLoop = True
+          while hitLoop and self.gameSettings["gamemode"] == "streaks":
+            wasHit = self.opponentMove()
+            hitLoop = wasHit
+            self.battlefield.setBoardInactive(0)
 
-        #Check if the computer won
-        if self.checkWinner(self.grids[0]):
-          self.handleWinner("Computer")
+            #Check if the computer won
+            if self.checkWinner(self.grids[0]):
+              self.handleWinner("Computer")
       else:
         #Prepare board for right player
         self.playerTurn = 1
         self.battlefield.setBoardInactive(1)
 
     else:
-      self.rightPlayerMove(position)
+      wasHit = self.rightPlayerMove(position)
 
       #Prepare board for left player
       self.playerTurn = 0
@@ -296,6 +311,15 @@ class Game:
       #Check if the right player won
       if self.checkWinner(self.grids[0]):
         self.handleWinner("Guest")
+
+    if wasHit and self.gameSettings["gamemode"] == "streaks":
+      #Flip which player's turn
+      if self.gameSettings["opponent"] != "computer":
+        self.playerTurn = 1 - self.playerTurn
+        self.battlefield.setBoardInactive(self.playerTurn)
+    else:
+      print(f"{wasHit=}")
+      print(f"{self.gameSettings['gamemode']=}")
 
   def saveStatistics(self, totalMoves, hitsMade, playerWon):
     statsPath = "stats.csv"
