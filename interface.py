@@ -288,10 +288,14 @@ class Game:
         #Check for an active streak
         if not (wasHit and self.gameSettings["gamemode"] == "streaks"):
           hitLoop = True
-          while hitLoop and self.gameSettings["gamemode"] == "streaks":
+          while hitLoop:
             wasHit = self.opponentMove()
-            hitLoop = wasHit
             self.battlefield.setBoardInactive(0)
+
+            #Decide whether to give the computer another turn
+            hitLoop = wasHit
+            if self.gameSettings["gamemode"] != "streaks":
+              hitLoop = False
 
             #Check if the computer won
             if self.checkWinner(self.grids[0]):
@@ -317,9 +321,6 @@ class Game:
       if self.gameSettings["opponent"] != "computer":
         self.playerTurn = 1 - self.playerTurn
         self.battlefield.setBoardInactive(self.playerTurn)
-    else:
-      print(f"{wasHit=}")
-      print(f"{self.gameSettings['gamemode']=}")
 
   def saveStatistics(self, totalMoves, hitsMade, playerWon):
     statsPath = "stats.csv"
