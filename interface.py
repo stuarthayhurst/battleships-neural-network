@@ -300,6 +300,7 @@ class Game:
             #Check if the computer won
             if self.checkWinner(self.grids[0]):
               self.handleWinner("Computer")
+              hitLoop = False
       else:
         #Prepare board for right player
         self.playerTurn = 1
