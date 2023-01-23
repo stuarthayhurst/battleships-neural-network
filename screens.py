@@ -53,7 +53,6 @@ class Setup(classes.Screen):
       0: "normal",
       1: "streaks",
       2: "single-ship",
-      3: "powerups"
     }
 
     self.game.gameSettings["opponent"] = opponent
@@ -219,24 +218,7 @@ class Battlefield(classes.Screen):
       "right": 0
     }
 
-    self.powerUpLeft = self.builder.get_object("powerup-bar-left")
-    self.powerUpRight = self.builder.get_object("powerup-bar-right")
-
     self.rightPlayerLabel = self.builder.get_object("name-label-right") 
-
-    powerUpFiles = ["assets/carpetbomb.png", "assets/airstrike.png", "assets/cross.png"]
-    powerUpCallbacks = [self.carpetbombPressed, self.airstrikePressed, self.crossPressed]
-
-    for powerUpBar in [self.powerUpLeft, self.powerUpRight]:
-      count = 0
-      powerUpBar.set_sensitive(False)
-      for powerUpButton in powerUpBar:
-        powerUpButton.connect("clicked", powerUpCallbacks[count])
-        image = Gtk.Image.new_from_file(powerUpFiles[count])
-        powerUpButton.set_image(image)
-        powerUpButton.set_sensitive(False)
-
-        count += 1
 
     for battlefield in [self.leftGrid, self.rightGrid]:
       for i in range(7):
@@ -291,18 +273,6 @@ class Battlefield(classes.Screen):
       self.placeUserShips()
     self.element.show_all()
     self.game.start()
-
-  def carpetbombPressed(self, button):
-    print("Carpet bomb pressed")
-    pass
-
-  def airstrikePressed(self, button):
-    print("Air strike pressed")
-    pass
-
-  def crossPressed(self, button):
-    print("Cross pressed")
-    pass
 
 class GameEnd(classes.Screen):
   def __init__(self, battleshipsWindow, interfacePath):

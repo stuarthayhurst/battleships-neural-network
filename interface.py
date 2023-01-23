@@ -47,24 +47,11 @@ class Window(classes.Element):
     self.headerBar.show_all()
     self.element.set_titlebar(self.headerBar)
 
-    #Add icons to buttons and connect signals
-    image = Gtk.Image.new_from_file("assets/sound-on.png")
-    soundButton = self.builder.get_object("sound-toggle-button")
-    soundButton.set_image(image)
-    soundButton.connect("clicked", self.soundTogglePressed)
-
+    #Add icon to button and connect signal
     image = Gtk.Image.new_from_file("assets/statistics.png")
     statsButton = self.builder.get_object("statistics-button")
     statsButton.set_image(image)
     statsButton.connect("clicked", self.statsButtonPressed)
-
-    image = Gtk.Image.new_from_file("assets/achievements.png")
-    achievementsButton = self.builder.get_object("achievements-button")
-    achievementsButton.set_image(image)
-    achievementsButton.connect("clicked", self.achievementsButtonPressed)
-
-  def soundTogglePressed(self, button):
-    print("Sound toggle pressed")
 
   def statsButtonPressed(self, button):
     #Load stats in from file, and return status
@@ -99,9 +86,6 @@ class Window(classes.Element):
     #Display the message as a popup
     #Reuse the first screen found to send the popup from
     self.screens[self.namedScreenIds[list(self.namedScreenIds.keys())[0]]].showMessage(windowMessage)
-
-  def achievementsButtonPressed(self, button):
-    print("Achievements button pressed")
 
 class BattleshipsWindow(Window):
   def __init__(self, interfacePath, title):
