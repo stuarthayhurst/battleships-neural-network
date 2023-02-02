@@ -3,97 +3,67 @@
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkBox" id="setup">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="vexpand">True</property>
+    <property name="visible">1</property>
+    <property name="vexpand">1</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
+        <property name="visible">1</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
+            <property name="visible">1</property>
             <property name="halign">start</property>
             <property name="label" translatable="yes">Choose opponent:</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkRadioButton" id="opponent-multiplayer">
             <property name="label" translatable="yes">Multiplayer</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">False</property>
-            <property name="active">True</property>
-            <property name="draw-indicator">True</property>
+            <property name="visible">1</property>
+            <property name="can-focus">1</property>
+            <property name="active">1</property>
+            <property name="draw-indicator">1</property>
             <property name="group">opponent-computer</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
           <object class="GtkRadioButton" id="opponent-computer">
             <property name="label" translatable="yes">Computer</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">False</property>
-            <property name="active">True</property>
-            <property name="draw-indicator">True</property>
+            <property name="visible">1</property>
+            <property name="can-focus">1</property>
+            <property name="active">1</property>
+            <property name="draw-indicator">1</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkSeparator">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
+        <property name="visible">1</property>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
         <property name="position">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkBox" id="difficulty-area">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
+        <property name="visible">1</property>
         <child>
           <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
+            <property name="visible">1</property>
             <property name="label" translatable="yes">Select difficulty</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkComboBoxText" id="difficulty-combo">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
+            <property name="visible">1</property>
             <items>
               <item translatable="yes">Easy</item>
               <item translatable="yes">Normal</item>
@@ -101,50 +71,35 @@
             </items>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="pack-type">end</property>
             <property name="position">1</property>
           </packing>
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
         <property name="position">2</property>
       </packing>
     </child>
     <child>
       <object class="GtkSeparator">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
+        <property name="visible">1</property>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
         <property name="position">3</property>
       </packing>
     </child>
     <child>
       <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
+        <property name="visible">1</property>
         <child>
           <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
+            <property name="visible">1</property>
             <property name="label" translatable="yes">Select game mode</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkComboBoxText" id="gamemode-combo">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
+            <property name="visible">1</property>
             <items>
               <item translatable="yes">Normal</item>
               <item translatable="yes">Streaks</item>
@@ -152,31 +107,25 @@
             </items>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="pack-type">end</property>
             <property name="position">1</property>
           </packing>
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
         <property name="position">4</property>
       </packing>
     </child>
     <child>
       <object class="GtkButton" id="start-button">
         <property name="label" translatable="yes">Start</property>
-        <property name="visible">True</property>
-        <property name="can-focus">True</property>
-        <property name="receives-default">True</property>
+        <property name="visible">1</property>
+        <property name="can-focus">1</property>
+        <property name="receives-default">1</property>
         <property name="tooltip-text" translatable="yes">Start game</property>
         <property name="halign">end</property>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
         <property name="pack-type">end</property>
         <property name="position">5</property>
       </packing>
