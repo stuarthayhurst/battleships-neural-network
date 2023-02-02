@@ -11,8 +11,10 @@ import opponent
 import screens
 import classes
 
-def readStats(statsFile):
-  statsPath = "stats.csv"
+#Load statistics saved in a file
+# - If the file exists, return any contained data and True
+# - If the file didn't exist, return the default sat of statistics and False
+def readStats(statsPath):
   statsDict = {
     "totalGames": 0,
     "totalWins": 0,
@@ -27,18 +29,23 @@ def readStats(statsFile):
       for row in reader:
         statsDict[row[0]] = int(row[1])
   else:
+    #No file to load, return default fresh data and False
     return statsDict, False
 
+  #Return any found data and True
   return statsDict, True
 
-#Wrapper class for GTK
+#Wrapper class for GTK and window-specific concerns
 class Window(classes.Element):
   def __init__(self, uiFilePath):
+    #Create element with window content
     super().__init__(uiFilePath, "main-window")
 
+  #Set the window's title to the passed value
   def setTitle(self, title):
     self.headerBar.set_title(title)
 
+  #Add a header bar and statistics button
   def setupWindow(self):
     #Create and set a header bar
     self.headerBar = Gtk.HeaderBar()
@@ -53,6 +60,8 @@ class Window(classes.Element):
     statsButton.set_image(image)
     statsButton.connect("clicked", self.statsButtonPressed)
 
+  #Load and display statistics popup, if the statistics are present
+  # - If they're missing, display a popup and carry on
   def statsButtonPressed(self, button):
     #Load stats in from file, and return status
     statsPath = "stats.csv"
@@ -87,6 +96,8 @@ class Window(classes.Element):
     #Reuse the first screen found to send the popup from
     self.screens[self.namedScreenIds[list(self.namedScreenIds.keys())[0]]].showMessage(windowMessage)
 
+#Container class for battleships-specific concerns
+# - Also contains the instance of the game, as screens need to access it
 class BattleshipsWindow(Window):
   def __init__(self, interfacePath, title):
     #Create a window, load the UI and connect signals
@@ -94,6 +105,7 @@ class BattleshipsWindow(Window):
     self.setupWindow()
     self.setTitle(title)
 
+    #Create empty tracker to allow switching between screens
     self.screens = []
     self.namedScreenIds = {}
 
@@ -104,6 +116,7 @@ class BattleshipsWindow(Window):
     #Track an instance of the game
     self.game = Game(self)
 
+  #Create the setup screen and add to the screens tracker
   def createSetup(self, interfacePath):
     self.screens.append(screens.Setup(self, interfacePath))
     screenId = len(self.screens) - 1
@@ -113,6 +126,7 @@ class BattleshipsWindow(Window):
     self.namedScreenIds["setup"] = screenId
     return screenId
 
+  #Create the placement screen and add to the screens tracker
   def createPlacement(self, interfacePath, playerId):
     self.screens.append(screens.Placement(self, interfacePath, playerId))
     screenId = len(self.screens) - 1
@@ -122,6 +136,7 @@ class BattleshipsWindow(Window):
     self.namedScreenIds[f"placement-{playerId}"] = screenId
     return screenId
 
+  #Create the main battlefield / game screen and add to the screens tracker
   def createBattlefield(self, interfacePath):
     self.screens.append(screens.Battlefield(self, interfacePath))
     screenId = len(self.screens) - 1
@@ -131,6 +146,7 @@ class BattleshipsWindow(Window):
     self.namedScreenIds["battlefield"] = screenId
     return screenId
 
+  #Create the game end screen and add to the screens tracker
   def createGameEnd(self, interfacePath):
     self.screens.append(screens.GameEnd(self, interfacePath))
     screenId = len(self.screens) - 1
@@ -140,12 +156,17 @@ class BattleshipsWindow(Window):
     self.namedScreenIds["game-end"] = screenId
     return screenId
 
+  #Hide the active screen and show the new target
   def setActiveScreen(self, screenId):
+    #If a screen was shown, hide it
     if (self.activeScreenId != None):
       self.screens[self.activeScreenId].element.hide()
+
+    #Show the target screen, track which one was shown
     self.screens[screenId].show()
     self.activeScreenId = screenId
 
+  #Reset the game to its initial state, to allow another play without restarting
   def reset(self):
     #Reset game, settings and opponent
     self.game.opponent = opponent.Opponent()
@@ -190,14 +211,22 @@ class Game:
     self.totalMoves = 0
     self.hitsMade = 0
 
+  #Final game setup, executed as the game starts
+  # - Executed only when the game starts, as this is when all settings and required data is finalised
+  # - Not enough data is know when the constructor runs
   def start(self):
+    #Get access to the battlefield screen
     battlefieldId = self.battleshipsWindow.namedScreenIds["battlefield"]
     self.battlefield = self.battleshipsWindow.screens[battlefieldId]
 
+    #Prepare the game, as settings are now finalised
     if self.gameSettings["opponent"] == "computer":
       shipLengths = [5, 4, 3, 3, 2]
+      #Handle single ship game mode requiring different ship lengths
       if self.gameSettings["gamemode"] == "single-ship":
         shipLengths = [3, 3, 3, 3, 3]
+
+      #Generate the board with the required lengths, then save it
       self.opponent.generateGrid(shipLengths)
       self.grids.append(self.opponent.grid)
 
@@ -208,8 +237,10 @@ class Game:
     else:
       self.battlefield.rightPlayerLabel.set_label("Guest")
 
+    #Grey out the left side, as the right board is fired at first
     self.battlefield.setBoardInactive(0)
 
+  #Shoot at position, as the left player
   def leftPlayerMove(self, position):
     #Check where that lands and update marker
     if self.grids[1][position[1]][position[0]] == 1: #Hit
@@ -225,6 +256,7 @@ class Game:
       self.battlefield.setMarker(position, "right", "miss")
       return False
 
+  #Shoot at position, as the right player
   def rightPlayerMove(self, position):
     #Check where that lands and update marker
     if self.grids[0][position[1]][position[0]] == 1: #Hit
@@ -239,6 +271,7 @@ class Game:
       self.battlefield.setMarker(position, "left", "miss")
       return False
 
+  #Trigger the computer to make a move
   def opponentMove(self):
     #Next turn (computer)
     guess = self.opponent.makeMove()
@@ -258,6 +291,8 @@ class Game:
       self.opponent.feedbackMove("miss")
       return False
 
+  #Called as part of callback from GameTile class
+  # - Wrapper to handle a player's move, and also the computer's move (if playing against AI)
   def playerMove(self, position):
     wasHit = False
     if self.playerTurn == 0:
@@ -301,12 +336,13 @@ class Game:
       if self.checkWinner(self.grids[0]):
         self.handleWinner("Guest")
 
+    #Flip which player's turn, if a streak has occurred
     if wasHit and self.gameSettings["gamemode"] == "streaks":
-      #Flip which player's turn
       if self.gameSettings["opponent"] != "computer":
         self.playerTurn = 1 - self.playerTurn
         self.battlefield.setBoardInactive(self.playerTurn)
 
+  #Take in known data about a game, then update the statistics file
   def saveStatistics(self, totalMoves, hitsMade, playerWon):
     statsPath = "stats.csv"
     statsDict, foundFile = readStats(statsPath)
@@ -324,6 +360,10 @@ class Game:
         lineString = f"{key},{statsDict[key]}\n"
         statsFile.write(lineString)
 
+  #Called when a winner is detected
+  # - Announces the winner
+  # - Saves statistics if required
+  # - Displays the next screen (game end)
   def handleWinner(self, winner):
     print(f"{winner} has won!")
     self.battlefield.showMessage(f"{winner} has won!")
@@ -335,34 +375,44 @@ class Game:
     gameEndScreenId = self.battleshipsWindow.namedScreenIds["game-end"]
     gameEndScreen = self.battleshipsWindow.screens[gameEndScreenId]
 
+    #Display and fill game end screen
     self.battleshipsWindow.setActiveScreen(gameEndScreenId)
     gameEndScreen.setWinner(winner)
     gameEndScreen.setStatistics(self.totalMoves, self.hitsMade)
 
+  #Simple function to return as soon as a ship is found
   def checkWinner(self, grid):
+    #Check every row and column of the passed grid
     for row in grid:
       for col in row:
+        #Return as soon as a ship is found, as there hasn't been a winner
         if col == 1:
           return False
+    #No ships found, so they must be sunk (winner detected)
     return True
 
+  #Function to place a ship on a grid, then display this for the user at the same time
   def placeShip(self, grid, shipLength, isRotated, position, gtkGrid = False):
     #Parse the position
     targetCol = position[0]
     targetRow = position[1]
 
-    #Write the ship to the board
+    #Write the ship to the board (iterate over rows or columns depending on rotation)
     if isRotated:
+      #Iterate over the ship tiles
       for i in range(shipLength):
         grid[targetRow + i][targetCol] = 1
+        #If showing to the user, display the image
         if gtkGrid != False:
           gtkGrid.get_child_at(targetCol, targetRow + i).destroy()
           image = Gtk.Image.new_from_file("assets/placed.png")
           image.show()
           gtkGrid.attach(image, targetCol, targetRow + i, 1, 1)
     else:
+      #Iterate over ship tiles
       for i in range(shipLength):
         grid[targetRow][targetCol + i] = 1
+        #If showing to the user, display the image
         if gtkGrid != False:
           gtkGrid.get_child_at(targetCol + i, targetRow).destroy()
           image = Gtk.Image.new_from_file("assets/placed.png")
