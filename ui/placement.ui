@@ -7,13 +7,40 @@
     <property name="vexpand">1</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="GtkButton" id="rotate-button">
+      <object class="GtkBox">
         <property name="visible">1</property>
-        <property name="can-focus">1</property>
-        <property name="receives-default">1</property>
-        <property name="tooltip-text" translatable="yes">Rotate selected ship</property>
-        <property name="halign">end</property>
-        <property name="margin-bottom">5</property>
+        <child>
+          <object class="GtkLabel" id="player-ship-label">
+            <property name="visible">1</property>
+            <property name="margin-end">20</property>
+            <property name="label" translatable="yes">Player&apos;s ships</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="rotate-button">
+            <property name="visible">1</property>
+            <property name="can-focus">1</property>
+            <property name="receives-default">1</property>
+            <property name="tooltip-text" translatable="yes">Rotate selected ship</property>
+            <property name="halign">end</property>
+            <property name="margin-bottom">5</property>
+          </object>
+          <packing>
+            <property name="pack-type">end</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">1</property>
+            <property name="margin-end">10</property>
+            <property name="label" translatable="yes">Selected tile is always the top left corner of the ship</property>
+          </object>
+          <packing>
+            <property name="pack-type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
       </object>
     </child>
     <child>

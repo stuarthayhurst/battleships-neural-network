@@ -99,6 +99,12 @@ class Placement(classes.Screen):
     #Accessed by [row][column]
     self.grid = [[0 for i in range(7)] for j in range(7)]
 
+    playerName = "Player"
+    if self.playerId == 1:
+      playerName = "Guest"
+
+    self.builder.get_object("player-ship-label").set_label(f"{playerName}'s ships")
+
     self.rotateButton = self.builder.get_object("rotate-button")
     self.confirmButton = self.builder.get_object("confirm-button")
 
