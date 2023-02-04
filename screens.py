@@ -152,6 +152,9 @@ class Placement(classes.Screen):
       shipLengths = [3, 3, 3, 3, 3]
     self.placeRemainingShips(shipLengths)
 
+    #Highlight the first ship
+    self.setNextShipActive()
+
     #Show relevant elements
     self.element.show_all()
     for i in range(len(self.shipRotateIcons)):
@@ -166,6 +169,12 @@ class Placement(classes.Screen):
       self.shipRotateIcons[self.activeShipIndex].show()
     else:
       self.shipRotateIcons[self.activeShipIndex].hide()
+
+  def setNextShipActive(self):
+    #Set all markers in the next ship to active
+    if self.activeShipIndex != len(self.shipLengths):
+      for image in self.ships[self.activeShipIndex].get_children()[0].get_children():
+        image.set_sensitive(True)
 
   #Callback when rotating the ship, update the state and call update function
   def rotateButtonPressed(self, button):
@@ -233,6 +242,9 @@ class Placement(classes.Screen):
     #Select the next ship
     self.activeShipIndex += 1
 
+    #Brighten the next ship
+    self.setNextShipActive()
+
     #Reset the ship rotation and target tile
     self.isActiveShipRotated = False
     self.targetTile = -1
@@ -243,6 +255,9 @@ class Placement(classes.Screen):
     for i in range(shipLength):
       piece = Gtk.Image.new_from_file("assets/placed.png")
       container.add(piece)
+
+      #By default, grey out the piece
+      piece.set_sensitive(False)
 
     return container
 
