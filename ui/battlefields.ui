@@ -24,7 +24,7 @@
               <object class="GtkLabel" id="name-label-left">
                 <property name="visible">1</property>
                 <property name="margin-end">5</property>
-                <property name="label" translatable="yes">Player</property>
+                <property name="label" translatable="yes">Player 1&apos;s ships</property>
               </object>
               <packing>
                 <property name="pack-type">end</property>
@@ -64,7 +64,7 @@
               <object class="GtkLabel" id="name-label-right">
                 <property name="visible">1</property>
                 <property name="margin-end">5</property>
-                <property name="label" translatable="yes">Player</property>
+                <property name="label" translatable="yes">Player 2&apos;s ships</property>
               </object>
               <packing>
                 <property name="pack-type">end</property>

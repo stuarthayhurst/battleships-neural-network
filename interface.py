@@ -233,9 +233,9 @@ class Game:
       #Load weights if the opponent is a computer
       self.opponent.loadWeights(f"weights/weights-{self.gameSettings['difficulty']}.dmp")
 
-      self.battlefield.rightPlayerLabel.set_label("Computer")
+      self.battlefield.rightPlayerLabel.set_label("Computer's ships")
     else:
-      self.battlefield.rightPlayerLabel.set_label("Guest")
+      self.battlefield.rightPlayerLabel.set_label("Guest's ships")
 
     #Grey out the left side, as the right board is fired at first
     self.battlefield.setBoardInactive(0)
