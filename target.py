@@ -3,6 +3,7 @@ import time, random
 import model
 import dataset
 
+#Return the time on seconds, with nanosecond resolution
 def getSeconds():
   return time.time_ns() / 1000000000
 
@@ -30,11 +31,13 @@ def getWeights(weightFile, networkSize):
 
   return weights
 
+#Return False if any ships remain
 def checkGrid(ships):
   if 1 in ships:
     return False
   return True
 
+#Write the current weights to a file
 def saveModel(trainingNetwork, outputWeightFile):
   #Save model weights to file
   trainedWeights = trainingNetwork.dumpNetwork()
@@ -42,6 +45,7 @@ def saveModel(trainingNetwork, outputWeightFile):
     for i in range(networkSize):
       file.write(f"{trainedWeights[i]}\n")
 
+#Calculate average number of guesses to clear a board over a given sample size
 def benchmark(sampleNetwork, sampleSize):
   requiredGuesses = 0
   for sample in range(sampleSize):
@@ -50,11 +54,14 @@ def benchmark(sampleNetwork, sampleSize):
     grid = generatedData[0][0]
     ships = generatedData[0][1]
 
+    #Carry out each test
     totalGuesses = 0
     while not checkGrid(ships):
+      #Sample the neural network
       totalGuesses += 1
       guesses = sampleNetwork.sampleData(grid)
 
+      #Sample highest, unguessed probability
       maxGuess = 0
       maxGuessIndex = -1
       for i in range(len(guesses)):
@@ -69,6 +76,7 @@ def benchmark(sampleNetwork, sampleSize):
         while grid[guess] != 0:
           guess = random.randint(0, len(grid) - 1)
 
+      #Mark the board
       if ships[guess] == 1:
         grid[guess] = 1
         ships[guess] = 0
@@ -83,6 +91,7 @@ def benchmark(sampleNetwork, sampleSize):
 inputSize = 49
 networkSize = inputSize ** 2
 
+#Network parameters
 batchCount, batchSize = 100000, 10
 learningRate = 0.00005
 datasetSize = 100000
@@ -113,6 +122,7 @@ print(f"Average guesses: {currentValue}")
 if currentValue <= targetValue:
   training = False
 
+#Keep training until stopped by reaching the target
 while training:
   #Generate training data
   startTime = getSeconds()
@@ -134,5 +144,6 @@ while training:
   if round(currentValue, 1) <= targetValue:
     training = False
 
+  #Output the weights as the current working values, and against the measured value
   saveModel(trainingNetwork, f"training/weights-{round(currentValue, 1)}-avg.dmp")
   saveModel(trainingNetwork, "training/weights-current-avg.dmp")

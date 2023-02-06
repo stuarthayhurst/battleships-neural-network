@@ -48,7 +48,7 @@ def buildDataset(datasetSize, boardDimensions, maxHits):
   pieceInfo = {"c": 5, "b": 4, "d": 3, "s": 3, "p": 2}
   dataset = []
 
-  #Build the fresh boards
+  #Build the fresh boards, with ships placed on each
   for gridCount in range(datasetSize):
     dataset.append([None, None])
     dataset[gridCount][0] = [[0 for x in range(boardDimensions)] for i in range(boardDimensions)]

@@ -4,6 +4,7 @@ import model
 import dataset
 import sys
 
+#Return list of weight values if found, otherwise exit (no point recovering if the opponent won't run)
 def getWeights(weightFile, networkSize):
   #Attempt to load existing weights from file
   weightsValid = False
@@ -45,11 +46,13 @@ weights = getWeights(weightFile, networkSize)
 exampleNetwork = model.Network(inputDimensions ** 2)
 exampleNetwork.loadWeights(weights)
 
+#Return False if any ships remain on the board
 def checkGrid(ships):
   if 1 in ships:
     return False
   return True
 
+#Run configured number of games, and measure the average number of hits
 sampleSize = 1000
 requiredGuesses = 0
 for sample in range(sampleSize):
@@ -61,11 +64,14 @@ for sample in range(sampleSize):
   grid = generatedData[0][0]
   ships = generatedData[0][1]
 
+  #Guess until all ships are cleared
   totalGuesses = 0
   while not checkGrid(ships):
+    #Sample the neural network (generate probabilities)
     totalGuesses += 1
     guesses = exampleNetwork.sampleData(grid)
 
+    #Pick the highest probability, that hasn't already been guessed
     maxGuess = 0
     maxGuessIndex = -1
     for i in range(len(guesses)):
@@ -75,11 +81,13 @@ for sample in range(sampleSize):
           maxGuessIndex = i
     guess = maxGuessIndex
 
+    #Fallback to random number if no probability is given
     if guess == -1:
       guess = random.randint(0, len(grid) - 1)
       while grid[guess] != 0:
         guess = random.randint(0, len(grid) - 1)
 
+    #Mark the result of the hit on the board
     if ships[guess] == 1:
       grid[guess] = 1
       ships[guess] = 0

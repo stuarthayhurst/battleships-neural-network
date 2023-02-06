@@ -3,6 +3,7 @@ import time, random
 import model
 import dataset
 
+#Return the time on seconds, with nanosecond resolution
 def getSeconds():
   return time.time_ns() / 1000000000
 
@@ -55,6 +56,7 @@ generatedData = dataset.buildDataset(datasetSize, boardDimensions, maxHits)
 print(f"Generated dataset in {round(getSeconds() - startTime, 4)}s")
 startTime = getSeconds()
 
+#Check the dataset loaded correctly
 if not exampleNetwork.loadDataset(generatedData):
   print("Failed to load dataset")
   exit(1)
@@ -62,6 +64,7 @@ if not exampleNetwork.loadDataset(generatedData):
 print(f"Loaded dataset in {round(getSeconds() - startTime, 4)}s")
 startTime = getSeconds()
 
+#Dispatch the neural network's training
 batchCount, batchSize, learningRate = 100000, 10, 0.0005
 exampleNetwork.trainNetwork(batchCount, batchSize, learningRate)
 print(f"Trained network in {round(getSeconds() - startTime, 4)}s")
