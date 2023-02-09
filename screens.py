@@ -206,7 +206,6 @@ class Placement(classes.Screen):
     shipLength = self.shipLengths[self.activeShipIndex]
 
     #Convert tile index to a grid coordinate
-    self.targetTile = self.targetTile
     targetCol = self.targetTile // 7
     targetRow = self.targetTile % 7
 
