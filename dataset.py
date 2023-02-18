@@ -41,8 +41,7 @@ def placeShips(grid, boardDimensions):
         x, y = random.randint(0, boardDimensions - 1), random.randint(0, boardDimensions - 1)
 
         #Attempt to place the piece
-        if placePiece(grid, shipLength, x, y, flipped):
-          placing = False
+        placing = not placePiece(grid, shipLength, x, y, flipped)
 
 def buildDataset(datasetSize, boardDimensions, maxHits):
   dataset = []
