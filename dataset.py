@@ -30,9 +30,9 @@ def placePiece(grid, length, x, y, flipped):
 
   return True
 
-def placeShips(grid, boardDimensions, pieceInfo):
+def placeShips(grid, boardDimensions):
     #Fill the grids with ships
-    for piece in pieceInfo.keys():
+    for shipLength in [5, 4, 3, 3, 2]:
       #Keep trying to place until it succeeds
       placing = True
       while placing:
@@ -41,11 +41,10 @@ def placeShips(grid, boardDimensions, pieceInfo):
         x, y = random.randint(0, boardDimensions - 1), random.randint(0, boardDimensions - 1)
 
         #Attempt to place the piece
-        if placePiece(grid, pieceInfo[piece], x, y, flipped):
+        if placePiece(grid, shipLength, x, y, flipped):
           placing = False
 
 def buildDataset(datasetSize, boardDimensions, maxHits):
-  pieceInfo = {"c": 5, "b": 4, "d": 3, "s": 3, "p": 2}
   dataset = []
 
   #Build the fresh boards, with ships placed on each
@@ -53,7 +52,7 @@ def buildDataset(datasetSize, boardDimensions, maxHits):
     dataset.append([None, None])
     dataset[gridCount][0] = [[0 for x in range(boardDimensions)] for i in range(boardDimensions)]
     dataset[gridCount][1] = [[0 for x in range(boardDimensions)] for i in range(boardDimensions)]
-    placeShips(dataset[gridCount][1], boardDimensions, pieceInfo)
+    placeShips(dataset[gridCount][1], boardDimensions)
 
   #Place a random number of hits on each board
   for gridCount in range(datasetSize):
