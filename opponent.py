@@ -67,8 +67,8 @@ class Opponent():
     guess = maxGuessIndex
 
     #x and y flipped compared to other sections of code
-    #This is because the neural network returns data in order horizontally, then vertically
-    #Other sections of code enumerate the grid vertically then horizontally
+    #This is because the neural network returns data in as a concatenated list of rows
+    #But the tiles are indexed top -> bottom, then left to right, effectively the opposite of this
     x = guess % 7
     y = guess // 7
 
