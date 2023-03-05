@@ -39,7 +39,7 @@ class Network:
 
     return weights
 
-  #Signmoid activation function, called on each output
+  #Sigmoid activation function, called on each output
   # - Shifts any numerical input into the range 0 - 1
   def sigmoidActivation(self, result):
     return 1 / (1 + numpy.exp(-result))
