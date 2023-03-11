@@ -47,15 +47,11 @@ class Tile():
     self.parentScreen.targetTile = self.tileId
 
 #Class to represent an individual tile during gameplay
-class GameTile():
+class GameTile(Tile):
   def __init__(self, parentScreen, tileId):
-    self.parentScreen = parentScreen
-    self.tileId = int(tileId)
-
-    #Create button and connect callback
-    self.element = Gtk.Button.new_with_label("")
-    self.element.connect("clicked", self.tilePressed)
+    super().__init__(parentScreen, tileId)
 
   #Called when the tile is pressed, triggers a player move on the parent screen
+  #Overrides parent's tilePressed
   def tilePressed(self, button):
     self.parentScreen.playerMove(self.tileId)
