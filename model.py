@@ -131,8 +131,8 @@ class Network:
       dPL = self.sigmoidDerivative(preActivationValues[0][targetNode])
       for previousNode in range(self.interfaceSize):
         dLW = dataPair[0][previousNode]
-        dEL = dEP * dPL * dLW
-        tempWeights[targetNode][previousNode] += dEL * learningRate
+        dEW = dEP * dPL * dLW
+        tempWeights[targetNode][previousNode] += dEW * learningRate
 
       return tempWeights
 
