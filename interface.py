@@ -302,6 +302,7 @@ class Game:
       #Check if the player won
       if self.checkWinner(self.grids[1]):
         self.handleWinner("Player 1")
+        return
 
       if self.gameSettings["opponent"] == "computer":
         #Check for an active streak
@@ -320,6 +321,7 @@ class Game:
             if self.checkWinner(self.grids[0]):
               self.handleWinner("Computer")
               hitLoop = False
+              return
       else:
         #Prepare board for right player
         self.playerTurn = 1
@@ -335,6 +337,7 @@ class Game:
       #Check if the right player won
       if self.checkWinner(self.grids[0]):
         self.handleWinner("Guest")
+        return
 
     #Flip which player's turn, if a streak has occurred
     if wasHit and self.gameSettings["gamemode"] == "streaks":
