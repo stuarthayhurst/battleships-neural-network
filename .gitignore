@@ -2,3 +2,5 @@ __pycache__
 *.ui~
 images/
 stats.csv
+training/
+.venv
